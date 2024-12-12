@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function TrioFormationScreen() {
   const horses = Array.from({ length: 16 }, (_, i) => i + 1); // 1〜16の馬番号
@@ -39,6 +40,7 @@ export default function TrioFormationScreen() {
   };
 
   return (
+ <ScrollView>
     <View style={styles.container}>
       <Text style={styles.title}>三連複フォーメーション</Text>
 
@@ -122,6 +124,7 @@ export default function TrioFormationScreen() {
         総組み合わせ数: {calculateCombinations().length}
       </Text>
     </View>
+    </ScrollView>
   );
 }
 
