@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
-import { calendarData } from "@/data/calendarData"; // カレンダーデータをインポート
+import { calendarData } from "@/data/calendarData"; 
 
 export default function RaceSelectionScreen() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
