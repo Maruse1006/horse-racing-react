@@ -2,23 +2,27 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
-import { calendarData } from "@/data/calendarData"; 
+import { useNavigation } from "@react-navigation/native"; // Navigation用のフック
+import { calendarData } from "@/data/calendarData";
 
 export default function RaceSelectionScreen() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
 
+  const navigation = useNavigation(); // Navigationフックを使用
+
   // 日付に基づいた開催場所のデータを取得
   const getPlacesForDate = (date: string | null) => {
     if (!date || !calendarData[date]) return [];
-    return calendarData[date].map((placeCode: string) => {
-      const place = places.find((p) => p.value === placeCode);
-      return place ? { label: place.label, value: place.value } : null;
-    }).filter(Boolean);
+    return calendarData[date]
+      .map((placeCode: string) => {
+        const place = places.find((p) => p.value === placeCode);
+        return place ? { label: place.label, value: place.value } : null;
+      })
+      .filter(Boolean);
   };
 
-  // 開催場所の全データ (静的リスト)
   const places = [
     { label: "札幌", value: "01" },
     { label: "函館", value: "02" },
@@ -32,7 +36,6 @@ export default function RaceSelectionScreen() {
     { label: "小倉", value: "10" },
   ];
 
-  // レース番号のデータ (1~12レース)
   const races = Array.from({ length: 12 }, (_, i) => ({
     label: `${i + 1}R`,
     value: `${i + 1}`,
@@ -45,14 +48,21 @@ export default function RaceSelectionScreen() {
       return;
     }
 
-    // レースIDを生成
     const raceId = `${selectedDate.replace(/-/g, "")}${selectedPlace}${selectedRace}`;
     Alert.alert("レース情報", `選択したレースID: ${raceId}`);
-    // APIリクエストや画面遷移が可能
   };
 
   // 選択した日付に基づいた開催場所リストを取得
   const filteredPlaces = getPlacesForDate(selectedDate);
+
+  // 式別画面に遷移する処理
+  const navigateToBettingOptions = () => {
+    navigation.navigate("bettingTypePage", {
+      date: selectedDate,
+      place: selectedPlace,
+      race: selectedRace,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -62,9 +72,7 @@ export default function RaceSelectionScreen() {
       <Calendar
         onDayPress={(day) => setSelectedDate(day.dateString)}
         markedDates={
-          selectedDate
-            ? { [selectedDate]: { selected: true, marked: true } }
-            : {}
+          selectedDate ? { [selectedDate]: { selected: true, marked: true } } : {}
         }
         theme={{
           selectedDayBackgroundColor: "#00adf5",
@@ -77,7 +85,7 @@ export default function RaceSelectionScreen() {
       <RNPickerSelect
         onValueChange={(value) => setSelectedPlace(value)}
         items={filteredPlaces}
-        value={selectedPlace || undefined} // null の場合 undefined にする
+        value={selectedPlace || undefined}
         placeholder={{ label: "開催場所を選択", value: null }}
       />
 
@@ -86,7 +94,7 @@ export default function RaceSelectionScreen() {
       <RNPickerSelect
         onValueChange={(value) => setSelectedRace(value)}
         items={races}
-        value={selectedRace || undefined} // null の場合 undefined にする
+        value={selectedRace || undefined}
         placeholder={{ label: "レース番号を選択", value: null }}
       />
       <Text style={styles.label}>
@@ -95,6 +103,13 @@ export default function RaceSelectionScreen() {
 
       {/* 提出ボタン */}
       <Button title="レースを確認" onPress={handleSubmit} />
+
+      {/* 式別画面への遷移ボタン */}
+      <Button
+        title="式別画面へ移動"
+        onPress={navigateToBettingOptions}
+        color="#228b22"
+      />
     </View>
   );
 }

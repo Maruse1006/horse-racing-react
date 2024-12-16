@@ -1,0 +1,78 @@
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native"; // Navigation用フック
+
+const bettingOptions = [
+  { id: "1", label: "単勝", screen: "TanshoScreen" },
+  { id: "2", label: "複勝", screen: "FukushoScreen" },
+  { id: "3", label: "枠連", screen: "WakurenScreen" },
+  { id: "4", label: "馬連", screen: "UmarenScreen" },
+  { id: "5", label: "ワイド", screen: "WideScreen" },
+  { id: "6", label: "馬単", screen: "UmatanScreen" },
+  { id: "7", label: "三連複", screen: "trifectaBeddingType" },
+  { id: "8", label: "3連単", screen: "SanrentanScreen" },
+];
+
+export default function BettingOptionsScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { date, place, race } = route.params || {}; // パラメータのデフォルト値はnull
+
+  React.useEffect(() => {
+    console.log("Received parameters:", { date, place, race });
+  }, [date, place, race]);
+
+  const handleOptionPress = (screen: string) => {
+    console.log("Navigating to:", screen);
+    navigation.navigate(screen);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>式別</Text>
+      <Text>選択した情報: 日付={date}, 場所={place}, レース番号={race}</Text>
+      <FlatList
+        data={bettingOptions}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.optionItem}
+            onPress={() => handleOptionPress(item.screen)}
+          >
+            <Text style={styles.optionText}>{item.label}</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f4f4f4",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+    textAlign: "center",
+    color: "#fff",
+    backgroundColor: "#228b22",
+    paddingVertical: 10,
+  },
+  optionItem: {
+    backgroundColor: "#fff",
+    padding: 16,
+    marginVertical: 4,
+    borderRadius: 8,
+    borderColor: "#ddd",
+    borderWidth: 1,
+  },
+  optionText: {
+    fontSize: 18,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+});
