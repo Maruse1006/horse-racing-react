@@ -12,7 +12,7 @@ const options = [
 export default function TrifectaBeddingType() {
   const handlePress = (option: string) => {
     console.log(`選択されたオプション: ${option}`);
-    // 必要なら遷移処理など追加
+    
   };
 
   return (

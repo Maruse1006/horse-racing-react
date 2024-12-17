@@ -1,30 +1,45 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { useNavigation, useRoute} from "@react-navigation/native";
 
-// オプションデータ（表示するリスト）
 const options = [
-  { id: "1", label: "フォーメーション" },
-  { id: "2", label: "ボックス" },
+  { id: "1", label: "フォーメーション", screen: "TrifectaCombination" },
+  { id: "2", label: "ボックス",screen: "trifectaCombination" },
   { id: "3", label: "軸 1 頭流し" },
   { id: "4", label: "軸 2 頭流し" },
 ];
 
 export default function TrifectaBeddingType() {
-  const handlePress = (option: string) => {
-    console.log(`選択されたオプション: ${option}`);
-    // 必要なら遷移処理など追加
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { date, place, race } = route.params || {}; 
+  React.useEffect(() => {
+      console.log("Received parameters:", { date, place, race });
+    }, [date, place, race]);
+
+  const handlePress = (option) => {
+    console.log(`選択されたオプション: ${option.label}`);
+    console.log(`選択されたオプション: ${option.screen}`);
+    if (option.screen) {
+      navigation.navigate(option.screen, {
+        date, 
+        place, 
+        race,
+      }); 
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>式別</Text>
+      <Text style={styles.title}>三連複式別</Text>
+      <Text>選択した情報: 日付={date}, 場所={place}, レース番号={race}</Text>
       <FlatList
         data={options}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => handlePress(item.label)}
+            onPress={() => handlePress(item)}
           >
             <Text style={styles.itemText}>{item.label}</Text>
           </TouchableOpacity>

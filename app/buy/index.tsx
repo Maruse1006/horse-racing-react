@@ -2,8 +2,18 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
-import { useNavigation } from "@react-navigation/native"; // Navigation用のフック
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { calendarData } from "@/data/calendarData";
+
+// ルートパラメーターの型定義
+type RouteParams = {
+  date: string;
+  place: string;
+  race: string;
+};
+
+// RoutePropを使ってuseRouteの型を設定
+type RouteProps = RouteProp<{ params: RouteParams }, "params">;
 
 export default function RaceSelectionScreen() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -11,6 +21,10 @@ export default function RaceSelectionScreen() {
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
 
   const navigation = useNavigation(); // Navigationフックを使用
+  const route = useRoute<RouteProps>(); // useRouteの型指定
+  const { date, place, race } = route.params || {}; // パラメーター取得
+
+  console.log("Received params:", { date, place, race });
 
   // 日付に基づいた開催場所のデータを取得
   const getPlacesForDate = (date: string | null) => {
