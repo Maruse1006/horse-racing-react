@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { calendarData } from "@/data/calendarData";
+import { calendarData, placeData } from "@/data/calendarData";
 
 // ルートパラメーターの型定義
 type RouteParams = {
@@ -19,6 +19,8 @@ export default function RaceSelectionScreen() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
+  const [dayCount, setDayCount] = useState<string | null>(null); // 開催日数の状態管理
+  const [round, setRound] = useState<string | null>(null); // 開催回数の状態管理
 
   const navigation = useNavigation(); // Navigationフックを使用
   const route = useRoute<RouteProps>(); // useRouteの型指定
@@ -26,61 +28,75 @@ export default function RaceSelectionScreen() {
 
   console.log("Received params:", { date, place, race });
 
+  // 特定の日付と競馬場の開催日数・開催回数を取得
+  const getDayCountAndRound = (date: string | null, placeId: string | null) => {
+    if (!date || !placeId || !calendarData[date]) return { day: null, round: null };
+
+    const schedule = calendarData[date].find((entry) => entry.placeId === placeId);
+
+    return schedule
+      ? { day: schedule.day, round: schedule.round }
+      : { day: null, round: null };
+  };
+
   // 日付に基づいた開催場所のデータを取得
   const getPlacesForDate = (date: string | null) => {
     if (!date || !calendarData[date]) return [];
     return calendarData[date]
-      .map((placeCode: string) => {
-        const place = places.find((p) => p.value === placeCode);
-        return place ? { label: place.label, value: place.value } : null;
+      .map((schedule) => {
+        const place = placeData.find((p) => p.id === schedule.placeId);
+        return place
+          ? { label: `${schedule.round} ${place.name}`, value: schedule.placeId }
+          : null;
       })
       .filter(Boolean);
   };
 
-  const places = [
-    { label: "札幌", value: "01" },
-    { label: "函館", value: "02" },
-    { label: "福島", value: "03" },
-    { label: "新潟", value: "04" },
-    { label: "東京", value: "05" },
-    { label: "中山", value: "06" },
-    { label: "中京", value: "07" },
-    { label: "京都", value: "08" },
-    { label: "阪神", value: "09" },
-    { label: "小倉", value: "10" },
-  ];
+  // 開催場所を選択したときに開催日数と回数を取得
+  const handlePlaceSelection = (value: string | null) => {
+    setSelectedPlace(value);
+    const { day, round } = getDayCountAndRound(selectedDate, value);
+    setDayCount(day);
+    setRound(round);
+  };
+
+  const places = getPlacesForDate(selectedDate);
 
   const races = Array.from({ length: 12 }, (_, i) => ({
     label: `${i + 1}R`,
     value: `${i + 1}`,
   }));
 
-  // レース選択後の処理
-  const handleSubmit = () => {
-    if (!selectedDate || !selectedPlace || !selectedRace) {
+  // レース情報を確認する処理
+const handleSubmit = () => {
+  if (!selectedDate || !selectedPlace || !selectedRace) {
+    Alert.alert("エラー", "全ての項目を選択してください！");
+    return;
+  }
+
+  const raceId = `${selectedDate.replace(/-/g, "")}${selectedPlace}${selectedRace}`;
+  Alert.alert("レース情報", `選択したレースID: ${raceId}`);
+};
+
+
+  // 式別画面に遷移する処理
+  const navigateToBettingOptions = () => {
+    if (!selectedDate || !selectedPlace || !selectedRace || !dayCount || !round) {
       Alert.alert("エラー", "全ての項目を選択してください！");
       return;
     }
 
-    const raceId = `${selectedDate.replace(/-/g, "")}${selectedPlace}${selectedRace}`;
-    Alert.alert("レース情報", `選択したレースID: ${raceId}`);
-  };
-
-  // 選択した日付に基づいた開催場所リストを取得
-  const filteredPlaces = getPlacesForDate(selectedDate);
-
-  // 式別画面に遷移する処理
-  const navigateToBettingOptions = () => {
     navigation.navigate("bettingTypePage", {
-      date: selectedDate,
+      dayCount: dayCount,
       place: selectedPlace,
       race: selectedRace,
+      round: round,
     });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>レース選択</Text>
+      
 
       {/* カレンダー */}
       <Calendar
@@ -97,11 +113,13 @@ export default function RaceSelectionScreen() {
       {/* 開催場所の選択 */}
       <Text style={styles.label}>開催場所を選択</Text>
       <RNPickerSelect
-        onValueChange={(value) => setSelectedPlace(value)}
-        items={filteredPlaces}
+        onValueChange={handlePlaceSelection}
+        items={places}
         value={selectedPlace || undefined}
         placeholder={{ label: "開催場所を選択", value: null }}
       />
+      {/* <Text style={styles.label}>開催日数: {dayCount || "未選択"}</Text>
+      <Text style={styles.label}>開催回数: {round || "未選択"}</Text> */}
 
       {/* レース番号の選択 */}
       <Text style={styles.label}>レース番号を選択</Text>
