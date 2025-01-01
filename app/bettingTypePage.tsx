@@ -17,27 +17,29 @@ export default function BettingOptionsScreen() {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
     const [selectedRace, setSelectedRace] = useState<string | null>(null);
+   
     const navigation = useNavigation();
     const route = useRoute();
-    const { date, place, race } = route.params || {}; // パラメータのデフォルト値はnull
+    const { round, place, race,dayCount } = route.params || {}; // パラメータのデフォルト値はnull
 
     React.useEffect(() => {
-        console.log("Received parameters:", { date, place, race });
-    }, [date, place, race]);
+        console.log("Received parameters:", { round, place, race,dayCount });
+    }, [round, place, race]);
 
     const handleOptionPress = (screen: string) => {
         console.log("Navigating to:", screen);
         navigation.navigate(screen, {
-            date,  // 遷移元の`route.params`から取得した値
+            round,  // 遷移元の`route.params`から取得した値
             place,
             race,
+            dayCount
         });
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>式別</Text>
-            <Text>選択した情報: 日付={date}, 場所={place}, レース番号={race}</Text>
+            <Text>選択した情報: 日付={round}, 場所={place}, レース番号={race}</Text>
             <FlatList
                 data={bettingOptions}
                 keyExtractor={(item) => item.id}

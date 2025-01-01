@@ -12,19 +12,20 @@ const options = [
 export default function TrifectaBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { date, place, race } = route.params || {}; 
+  const { round, place, race,dayCount } = route.params || {}; 
   React.useEffect(() => {
-      console.log("Received parameters:", { date, place, race });
-    }, [date, place, race]);
+      console.log("Received parameters:", { dayCount, place, race });
+    }, [dayCount, place, race]);
 
   const handlePress = (option) => {
     console.log(`選択されたオプション: ${option.label}`);
     console.log(`選択されたオプション: ${option.screen}`);
     if (option.screen) {
       navigation.navigate(option.screen, {
-        date, 
+        round, 
         place, 
         race,
+        dayCount
       }); 
     }
   };
@@ -32,7 +33,7 @@ export default function TrifectaBeddingType() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>三連複式別</Text>
-      <Text>選択した情報: 日付={date}, 場所={place}, レース番号={race}</Text>
+      <Text>選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}</Text>
       <FlatList
         data={options}
         keyExtractor={(item) => item.id}
