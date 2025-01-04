@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute } from "@react-navigation/native"; // Navigation用フック
 
 const bettingOptions = [
-    { id: "1", label: "単勝", screen: "TanshoScreen" },
+    { id: "1", label: "単勝", screen: "winBet" },
     { id: "2", label: "複勝", screen: "FukushoScreen" },
     { id: "3", label: "枠連", screen: "WakurenScreen" },
     { id: "4", label: "馬連", screen: "UmarenScreen" },
