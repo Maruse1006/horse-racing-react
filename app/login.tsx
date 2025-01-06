@@ -1,7 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // ナビゲーションフックをインポート
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// ナビゲーションルート型を定義
+type RootStackParamList = {
+  Login: undefined;
+  Dashboard: undefined;
+};
 
 const Login = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -21,7 +31,11 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         setMessage('Login successful!');
+        await AsyncStorage.setItem('token', data.token);
         console.log('Token:', data.token); // トークンを保存（例: ローカルストレージ）
+
+        // ダッシュボード画面に遷移
+        navigation.replace('Dashboard');
       } else {
         const error = await response.json();
         setMessage(error.message || 'Login failed!');
@@ -58,6 +72,8 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    flex: 1,
+    justifyContent: 'center',
   },
   heading: {
     fontSize: 24,
