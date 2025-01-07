@@ -9,28 +9,31 @@ import TrifectaBeddingType from "../app/trifecta/trifectaBeddingType";
 import TrifectaCombination from "../app/trifectaCombination";
 import Blood from "../app/blood";
 import Layout from "../app/(tabs)/_layout";
-import winBet from "../app/winBet";
 import WinBet from "../app/winBet";
+import PlaceBet from "../app/placeBet";
+import Dashboard from "../app/dashboard";
+import Login from "../app/login";
+import LoginScreen from "../app/login";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Layout">
-        {/* ホーム画面 */}
+      <Stack.Navigator initialRouteName="Login"> {/* 初期ルートを "Login" に変更 */}
+        
+        <Stack.Screen name="login" component={LoginScreen} />
+        <Stack.Screen name="dashboad" component={Dashboard} />
         <Stack.Screen
           name="Layout"
           component={Layout}
           options={{ headerShown: false }}
         />
-        {/* 血統検索画面 */}
         <Stack.Screen
-          name="Blood"
+          name="blood"
           component={Blood}
           options={{ title: "血統検索" }}
         />
-        {/* 他の画面 */}
         <Stack.Screen
           name="RaceSelection"
           component={RaceSelectionScreen}
@@ -46,11 +49,15 @@ export default function App() {
           component={TrifectaBeddingType}
           options={{ title: "三連複" }}
         />
-
         <Stack.Screen
           name="WinBet"
           component={WinBet}
           options={{ title: "単勝" }}
+        />
+        <Stack.Screen
+          name="PlaceBet"
+          component={PlaceBet}
+          options={{ title: "複勝" }}
         />
         <Stack.Screen
           name="trifectaCombination"

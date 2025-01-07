@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // ナビゲーションフックをインポート
+import { useNavigation, useRoute } from '@react-navigation/native'; // ナビゲーションフックをインポート
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // ナビゲーションルート型を定義
@@ -10,8 +10,9 @@ type RootStackParamList = {
   Dashboard: undefined;
 };
 
-const Login = () => {
+export default function LoginScreen(): JSX.Element {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
+  const route = useRoute();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -35,7 +36,7 @@ const Login = () => {
         console.log('Token:', data.token); // トークンを保存（例: ローカルストレージ）
 
         // ダッシュボード画面に遷移
-        navigation.replace('Dashboard');
+        navigation.replace('dashboard');
       } else {
         const error = await response.json();
         setMessage(error.message || 'Login failed!');
@@ -67,7 +68,7 @@ const Login = () => {
       {message ? <Text style={styles.message}>{message}</Text> : null}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -91,5 +92,3 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
-
-export default Login;

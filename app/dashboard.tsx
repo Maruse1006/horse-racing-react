@@ -19,7 +19,7 @@ const Dashboard = () => {
       console.log('Token removed, redirecting to Login.');
 
       // ログイン画面に遷移
-      navigation.navigate("Login");
+      navigation.navigate("login");
     } catch (error) {
       console.error('Logout error:', error);
     }
