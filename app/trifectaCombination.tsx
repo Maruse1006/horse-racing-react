@@ -1,20 +1,47 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TrioFormationScreen() {
-  const horses = Array.from({ length: 16 }, (_, i) => i + 1); // 1〜16の馬番号
-  const [firstRow, setFirstRow] = useState<number[]>([]);
-  const [secondRow, setSecondRow] = useState<number[]>([]);
-  const [thirdRow, setThirdRow] = useState<number[]>([]);
+  const [horses, setHorses] = useState([]); // 馬データ用のステート
+  const [firstRow, setFirstRow] = useState([]);
+  const [secondRow, setSecondRow] = useState([]);
+  const [thirdRow, setThirdRow] = useState([]);
   const [payout, setPayout] = useState(0); // 払い戻し金額
+
   const navigation = useNavigation();
   const route = useRoute();
   const { dayCount, place, race, round } = route.params || {};
-  
-  React.useEffect(() => {
+
+  useEffect(() => {
+    // 馬データをバックエンドから取得
+    const fetchHorses = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ dayCount, place, race, round }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          // 馬データを番号順にソートして保存
+          const sortedHorses = data.horses.sort((a, b) => parseInt(a.number) - parseInt(b.number));
+          setHorses(sortedHorses); // ソート済みの馬データを保存
+        } else {
+          alert("馬データの取得に失敗しました。");
+        }
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+        alert("バックエンドへのリクエストに失敗しました。");
+      }
+    };
+
     console.log("Received parameters:", { dayCount, place, race, round });
+    fetchHorses(); // データを取得する関数を呼び出し
   }, [dayCount, place, race, round]);
 
   const toggleSelection = (rowSetter, row, horse) => {
@@ -24,7 +51,7 @@ export default function TrioFormationScreen() {
   };
 
   const selectAll = (rowSetter) => {
-    rowSetter(horses);
+    rowSetter(horses.map((horse) => horse.number)); // 馬番号で全選択
   };
 
   const clearSelection = (rowSetter) => {
@@ -37,40 +64,64 @@ export default function TrioFormationScreen() {
       for (let b of secondRow) {
         for (let c of thirdRow) {
           if (a !== b && a !== c && b !== c) {
-            combinations.push([a, b, c].sort((x, y) => x - y)); // ソートして重複排除
+            combinations.push([a, b, c].sort((x, y) => x - y));
           }
         }
       }
     }
-    const uniqueCombinations = Array.from(
-      new Set(combinations.map((combo) => JSON.stringify(combo)))
-    ).map((combo) => JSON.parse(combo));
-    return uniqueCombinations;
+    return Array.from(new Set(combinations.map(JSON.stringify))).map(JSON.parse);
   };
 
   const formatToTwoDigits = (value) => {
     if (typeof value === "string" && !isNaN(value)) {
-      return value.padStart(2, "0"); // 文字列で一桁の場合、先頭に0を追加
+      return value.padStart(2, "0");
     }
     if (typeof value === "number") {
-      return value.toString().padStart(2, "0"); // 数字の場合、文字列化して同じ処理
+      return value.toString().padStart(2, "0");
     }
-    return value; // それ以外の場合はそのまま返す
+    return value;
+  };
+
+  const getUserIdFromToken = (token) => {
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
+      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
+      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
   };
 
   const checkPayout = async () => {
     try {
-      // 入力値を2桁にフォーマット
+      // トークンからユーザーIDを取得
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        alert('ログインしてください。');
+        return;
+      }
+
+      const userId = getUserIdFromToken(token);
+      if (!userId) {
+        alert('ユーザー認証に問題があります。');
+        return;
+      }
+
       const formattedPayload = {
+        userId, // ユーザーIDを含める
+        name: "三連複",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: calculateCombinations(), // 組み合わせはそのまま使用
+        combinations: calculateCombinations(),
       };
-  
-      // リクエスト送信
-      const response = await fetch("http://localhost:8000/check_payout", {
+
+      console.log("Payload being sent:", formattedPayload);
+
+      const response = await fetch("http://127.0.0.1:5000/api/check_payout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,9 +132,9 @@ export default function TrioFormationScreen() {
       const data = await response.json();
 
       if (data.success) {
-        setPayout(data.payout); // 払い戻し金額を状態にセット
+        setPayout(data.payout);
       } else {
-        setPayout(0); // 払い戻しがない場合は0
+        setPayout(0);
         alert("該当する払い戻しがありません。");
       }
     } catch (error) {
@@ -93,100 +144,104 @@ export default function TrioFormationScreen() {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.title}>三連複フォーメーション</Text>
-        <Text>
-          選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-        </Text>
+<ScrollView>
+  <View style={styles.container}>
+    <Text style={styles.title}>三連複フォーメーション</Text>
+    <Text>
+      選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
+    </Text>
 
-        {/* 1列目 */}
-        <View style={styles.row}>
-          <Text style={styles.label}>1頭目</Text>
-          <FlatList
-            data={horses}
-            numColumns={4}
-            keyExtractor={(item) => item.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.horseItem,
-                  firstRow.includes(item) && styles.selectedHorse,
-                ]}
-                onPress={() => toggleSelection(setFirstRow, firstRow, item)}
-              >
-                <Text style={styles.horseText}>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
-          <View style={styles.buttonRow}>
-            <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
-            <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
-          </View>
-        </View>
-
-        {/* 2列目 */}
-        <View style={styles.row}>
-          <Text style={styles.label}>2頭目</Text>
-          <FlatList
-            data={horses}
-            numColumns={4}
-            keyExtractor={(item) => item.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.horseItem,
-                  secondRow.includes(item) && styles.selectedHorse,
-                ]}
-                onPress={() => toggleSelection(setSecondRow, secondRow, item)}
-              >
-                <Text style={styles.horseText}>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
-          <View style={styles.buttonRow}>
-            <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
-            <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
-          </View>
-        </View>
-
-        {/* 3列目 */}
-        <View style={styles.row}>
-          <Text style={styles.label}>3頭目</Text>
-          <FlatList
-            data={horses}
-            numColumns={4}
-            keyExtractor={(item) => item.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.horseItem,
-                  thirdRow.includes(item) && styles.selectedHorse,
-                ]}
-                onPress={() => toggleSelection(setThirdRow, thirdRow, item)}
-              >
-                <Text style={styles.horseText}>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
-          <View style={styles.buttonRow}>
-            <Button title="全通り" onPress={() => selectAll(setThirdRow)} />
-            <Button title="クリア" onPress={() => clearSelection(setThirdRow)} />
-          </View>
-        </View>
-
-        {/* 組み合わせ結果 */}
-        <Text style={styles.result}>
-          総組み合わせ数: {calculateCombinations().length}
-        </Text>
-
-        <Button title="払い戻し金額を確認" onPress={checkPayout} />
-
-        <Text style={styles.result}>
-          払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
-        </Text>
+    {/* 1列目 */}
+    <View style={styles.row}>
+      <Text style={styles.label}>1頭目</Text>
+      <FlatList
+        data={horses}
+        numColumns={4}
+        keyExtractor={(item) => item.number.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.horseItem,
+              firstRow.includes(item.number) && styles.selectedHorse,
+            ]}
+            onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
+          >
+            <Text style={styles.horseText}>
+              {item.number}. {item.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+      <View style={styles.buttonRow}>
+        <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
+        <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
       </View>
-    </ScrollView>
+    </View>
+
+    {/* 2列目 */}
+    <View style={styles.row}>
+      <Text style={styles.label}>2頭目</Text>
+      <FlatList
+        data={horses}
+        numColumns={4}
+        keyExtractor={(item) => item.number.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.horseItem,
+              secondRow.includes(item.number) && styles.selectedHorse,
+            ]}
+            onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
+          >
+            <Text style={styles.horseText}>
+              {item.number}. {item.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+      <View style={styles.buttonRow}>
+        <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
+        <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
+      </View>
+    </View>
+
+    {/* 3列目 */}
+    <View style={styles.row}>
+      <Text style={styles.label}>3頭目</Text>
+      <FlatList
+        data={horses}
+        numColumns={4}
+        keyExtractor={(item) => item.number.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.horseItem,
+              thirdRow.includes(item.number) && styles.selectedHorse,
+            ]}
+            onPress={() => toggleSelection(setThirdRow, thirdRow, item.number)}
+          >
+            <Text style={styles.horseText}>
+              {item.number}. {item.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+      <View style={styles.buttonRow}>
+        <Button title="全通り" onPress={() => selectAll(setThirdRow)} />
+        <Button title="クリア" onPress={() => clearSelection(setThirdRow)} />
+      </View>
+    </View>
+
+    {/* 結果表示 */}
+    <Text style={styles.result}>
+      総組み合わせ数: {calculateCombinations().length}
+    </Text>
+    <Button title="払い戻し金額を確認" onPress={checkPayout} />
+    <Text style={styles.result}>
+      払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
+    </Text>
+  </View>
+</ScrollView>
   );
 }
 

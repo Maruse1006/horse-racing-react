@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native"; // Navigatio
 
 const bettingOptions = [
     { id: "1", label: "単勝", screen: "winBet" },
-    { id: "2", label: "複勝", screen: "FukushoScreen" },
+    { id: "2", label: "複勝", screen: "PlaceBet" },
     { id: "3", label: "枠連", screen: "WakurenScreen" },
     { id: "4", label: "馬連", screen: "UmarenScreen" },
     { id: "5", label: "ワイド", screen: "WideScreen" },

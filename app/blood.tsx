@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native';
 import RequestButton from '../components/RequestButton';
 import PedigreeTable from '../components/PedigreeTable ';
 
-export default function Layout() {
+export default function Blood() {
   const [pedigreeData, setPedigreeData] = useState([]);
 
   // データ取得時に setPedigreeData を呼び出してデータを更新

@@ -1,19 +1,32 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, ImageBackground, FlatList, TouchableOpacity } from "react-native";
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function Layout() {
-  const [pedigreeData, setPedigreeData] = useState([]);
-
-  // メニューのデータ
   const menuItems = [
-    { id: "1", title: "血統検索", icon: "📋" },
+    { id: "1", title: "血統検索", icon: "📋", screen: "blood" },
     { id: "2", title: "収支登録", icon: "📈" },
     { id: "3", title: "レーシングカレンダー", icon: "📅" },
     { id: "4", title: "レース結果", icon: "🏆" },
   ];
 
-  const renderMenuItem = ({ item }: { item: { title: string; icon: string } }) => (
-    <TouchableOpacity style={styles.menuItem}>
+  const renderMenuItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.menuItem}
+      onPress={() => {
+        if (item.screen) {
+          navigation.navigate(item.screen);
+        }
+      }}
+    >
       <Text style={styles.menuIcon}>{item.icon}</Text>
       <Text style={styles.menuText}>{item.title}</Text>
     </TouchableOpacity>
@@ -22,9 +35,9 @@ export default function Layout() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../../assets/back.jpg")}
+        source={require("../../assets/images/back.jpg")}
         style={styles.backgroundImage}
-        resizeMode="cover" // 必要に応じて "contain" に変更
+        resizeMode="cover"
       >
         <View style={styles.content}>
           <Text style={styles.title}>中央競馬研究アプリ</Text>
@@ -32,9 +45,9 @@ export default function Layout() {
             data={menuItems}
             renderItem={renderMenuItem}
             keyExtractor={(item) => item.id}
-            numColumns={2} // 2列で表示
+            numColumns={2}
             contentContainerStyle={styles.menuContainer}
-            scrollEnabled={false} // スクロールを無効に設定
+            scrollEnabled={false}
           />
         </View>
       </ImageBackground>
@@ -43,21 +56,19 @@ export default function Layout() {
 }
 
 const styles = StyleSheet.create({
-  
   container: {
-    flex: 1, // 画面全体を埋める
+    flex: 1,
   },
   backgroundImage: {
     flex: 1,
-    width: '100%', 
-    height: '100%', 
-    resizeMode: 'cover', 
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
-  
   content: {
     flex: 1,
-    justifyContent: "center", 
-    alignItems: "center", 
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   title: {
@@ -72,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   menuContainer: {
-    flexGrow: 0, // 高さを内容に合わせる
+    flexGrow: 0,
     justifyContent: "space-between",
   },
   menuItem: {
