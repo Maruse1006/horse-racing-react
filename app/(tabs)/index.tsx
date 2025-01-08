@@ -1,8 +1,5 @@
 // Layout.tsx
 import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native';
-import RequestButton from '../../components/RequestButton';
-import PedigreeTable from '../../components/PedigreeTable ';
 
 export default function Layout() {
   const [pedigreeData, setPedigreeData] = useState([]);
@@ -13,9 +10,6 @@ export default function Layout() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <RequestButton onFetchData={handleDataFetch} />
-      <PedigreeTable data={pedigreeData} /> {/* 取得したデータを PedigreeTable に渡す */}
-    </SafeAreaView>
+    <div>a</div>
   );
 }

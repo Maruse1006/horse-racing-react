@@ -12,7 +12,7 @@ const PedigreeTable = () => {
     setError(null);
 
     try {
-      const response = await axios.post("http://192.168.3.160:8000/get_pedigree", {
+      const response = await axios.post("http://localhost:8081/get_pedigree", {
         horse_name: horseName, // 入力された馬名を送信
       });
 
