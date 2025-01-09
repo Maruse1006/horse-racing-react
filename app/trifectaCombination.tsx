@@ -110,7 +110,7 @@ export default function TrioFormationScreen() {
       }
 
       const formattedPayload = {
-        userId, // ユーザーIDを含める
+        userId, 
         name: "三連複",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
