@@ -4,12 +4,12 @@ import { useNavigation, useRoute } from "@react-navigation/native"; // Navigatio
 
 const bettingOptions = [
     { id: "1", label: "単勝", screen: "winBet" },
-    { id: "2", label: "複勝", screen: "PlaceBet" },
+    { id: "2", label: "複勝", screen: "placeBet" },
     { id: "3", label: "枠連", screen: "WakurenScreen" },
     { id: "4", label: "馬連", screen: "UmarenScreen" },
     { id: "5", label: "ワイド", screen: "WideScreen" },
     { id: "6", label: "馬単", screen: "UmatanScreen" },
-    { id: "7", label: "三連複", screen: "trifectaBeddingType" },
+    { id: "7", label: "3連複", screen: "trifectaBeddingType" },
     { id: "8", label: "3連単", screen: "SanrentanScreen" },
 ];
 
