@@ -18,7 +18,7 @@ export default function PlaceBet() {
         // 馬データをバックエンドから取得
         const fetchHorses = async () => {
             try {
-                const response = await fetch("http://localhost:8000/get_horses", {
+                const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function PlaceBet() {
     const checkPayout = async () => {
         try {
             const formattedPayload = {
-                name: "単勝",
+                name: "複勝",
                 dayCount: formatToTwoDigits(dayCount),
                 place: formatToTwoDigits(place),
                 race: formatToTwoDigits(race),
@@ -80,7 +80,7 @@ export default function PlaceBet() {
 
             console.log("Payload being sent:", formattedPayload);
 
-            const response = await fetch("http://localhost:8000/check_payout", {
+            const response = await fetch("http://127.0.0.1:5000/api/get_horses/check_payout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export default function PlaceBet() {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.title}>単勝</Text>
+                <Text style={styles.title}>複勝</Text>
                 <Text>
                     選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
                 </Text>
