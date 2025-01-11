@@ -14,6 +14,9 @@ import PlaceBet from "../app/placeBet";
 import Dashboard from "../app/dashboard";
 import Login from "../app/login";
 import LoginScreen from "../app/login";
+import quinella_bet from "../app/quinella_formation_bet";
+import QuinellaBeddingType from "../app/quinellaBeddingType";
+import QuinellaFormationScreen from "../app/quinella_formation_bet";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +24,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login"> {/* 初期ルートを "Login" に変更 */}
-        
+
         <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="dashboad" component={Dashboard} />
         <Stack.Screen
@@ -62,6 +65,17 @@ export default function App() {
         <Stack.Screen
           name="trifectaCombination"
           component={TrifectaCombination}
+          options={{ title: "三連複組み合わせ" }}
+        />
+        <Stack.Screen
+          name="quinellaBeddingType"
+          component={QuinellaBeddingType}
+          options={{ title: "馬連式別" }}
+        />
+
+        <Stack.Screen
+          name="quinella_formation_bet"
+          component={QuinellaFormationScreen}
           options={{ title: "三連複組み合わせ" }}
         />
       </Stack.Navigator>
