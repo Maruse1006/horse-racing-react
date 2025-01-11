@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RaceSelectionScreen from "../app/buy/index";
 import BettingOptionsScreen from "../app/bettingTypePage";
 import TrifectaBeddingType from "../app/trifecta/trifectaBeddingType";
-import TrifectaCombination from "../app/trifectaCombination";
+import TrifectaCombination from "../app/trifecta_formation";
 import Blood from "../app/blood";
 import Layout from "../app/(tabs)/_layout";
 import WinBet from "../app/winBet";
@@ -63,7 +63,7 @@ export default function App() {
           options={{ title: "複勝" }}
         />
         <Stack.Screen
-          name="trifectaCombination"
+          name="trifecta_formation"
           component={TrifectaCombination}
           options={{ title: "三連複組み合わせ" }}
         />

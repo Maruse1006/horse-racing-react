@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "TrifectaCombination" },
+  { id: "1", label: "フォーメーション", screen: "trifecta_formation" },
   { id: "2", label: "ボックス",screen: "trifectaCombination" },
   { id: "3", label: "軸 1 頭流し" },
   { id: "4", label: "軸 2 頭流し" },

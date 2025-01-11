@@ -62,7 +62,7 @@ export default function QuinellaFormationScreen() {
     for (let a of firstRow) {
       for (let b of secondRow) {
           if (a !== b ) {
-            combinations.push([a, b, c].sort((x, y) => x - y));
+            combinations.push([a, b].sort((x, y) => x - y));
         }
       }
     }
