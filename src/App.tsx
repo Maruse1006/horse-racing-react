@@ -17,6 +17,7 @@ import LoginScreen from "../app/login";
 import quinella_bet from "../app/quinella_formation_bet";
 import QuinellaBeddingType from "../app/quinellaBeddingType";
 import QuinellaFormationScreen from "../app/quinella_formation_bet";
+import TrioBoxScreen from "../app/quinella_box";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +77,11 @@ export default function App() {
         <Stack.Screen
           name="quinella_formation_bet"
           component={QuinellaFormationScreen}
+          options={{ title: "三連複組み合わせ" }}
+        />
+        <Stack.Screen
+          name="quinella_box"
+          component={TrioBoxScreen}
           options={{ title: "三連複組み合わせ" }}
         />
       </Stack.Navigator>
