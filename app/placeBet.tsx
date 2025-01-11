@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
@@ -5,11 +6,8 @@ import { ScrollView } from "react-native-gesture-handler";
 
 export default function PlaceBet() {
     const [horses, setHorses] = useState([]); // 馬データ用のステート
-    const [firstRow, setFirstRow] = useState([]);
-    const [secondRow, setSecondRow] = useState([]);
-    const [thirdRow, setThirdRow] = useState([]);
+    const [combinations, setCombinations] = useState([]);
     const [payout, setPayout] = useState(0); // 払い戻し金額
-
     const navigation = useNavigation();
     const route = useRoute();
     const { dayCount, place, race, round } = route.params || {};
@@ -68,19 +66,49 @@ export default function PlaceBet() {
         return value;
     };
 
+    const getUserIdFromToken = (token) => {
+        if (!token) return null;
+        try {
+            const payload = token.split('.')[1]; // JWTのペイロード部分を取得
+            const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
+            return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
+        } catch (error) {
+            console.error('Invalid token:', error);
+            return null;
+        }
+
+    };
+
+
     const checkPayout = async () => {
         try {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                alert('ログインしてください。');
+                return;
+            }
+
+            const userId = getUserIdFromToken(token);
+            if (!userId) {
+                alert('ユーザー認証に問題があります。');
+                return;
+            }
+
+
             const formattedPayload = {
+                userId,
                 name: "複勝",
                 dayCount: formatToTwoDigits(dayCount),
                 place: formatToTwoDigits(place),
                 race: formatToTwoDigits(race),
                 round: formatToTwoDigits(round),
+                combinations: formatToTwoDigits(combinations)
+
             };
 
             console.log("Payload being sent:", formattedPayload);
 
-            const response = await fetch("http://127.0.0.1:5000/api/get_horses/check_payout", {
+            const response = await fetch("http://127.0.0.1:5000/api/check_payout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -120,9 +148,9 @@ export default function PlaceBet() {
                             <TouchableOpacity
                                 style={[
                                     styles.horseItem,
-                                    firstRow.includes(item.number) && styles.selectedHorse,
+                                    combinations.includes(item.number) && styles.selectedHorse,
                                 ]}
-                                onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
+                                onPress={() => toggleSelection(setCombinations, combinations, item.number)}
                             >
                                 <Text style={styles.horseText}>{item.number}. {item.name}</Text>
                             </TouchableOpacity>
@@ -130,8 +158,8 @@ export default function PlaceBet() {
                     />
                 </View>
                 <View style={styles.buttonRow}>
-                    <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
-                    <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+                    <Button title="全通り" onPress={() => selectAll(setCombinations)} />
+                    <Button title="クリア" onPress={() => clearSelection(setCombinations)} />
                 </View>
                 <Button title="払い戻し金額を確認" onPress={checkPayout} />
                 <Text style={styles.result}>
