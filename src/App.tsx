@@ -19,6 +19,9 @@ import QuinellaBeddingType from "../app/quinellaBeddingType";
 import QuinellaFormationScreen from "../app/quinella_formation_bet";
 import TrioBoxScreen from "../app/quinella_box";
 import QuinellaSingleAxisScreen from "../app/quinella_single_axis";
+import ExactaBeddingType from "../app/exacta_betting_type";
+import ExactaFormationScreen from "../app/exacta_formation";
+import ExactaBox from "../app/exacta_box";
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +76,21 @@ export default function App() {
           name="quinellaBeddingType"
           component={QuinellaBeddingType}
           options={{ title: "馬連式別" }}
+        />
+        <Stack.Screen
+          name="exacta_bedding_type"
+          component={ExactaBeddingType}
+          options={{ title: "馬単式別" }}
+        />
+        <Stack.Screen
+          name="exacta_formation"
+          component={ExactaFormationScreen}
+          options={{ title: "馬単フォーメーション" }}
+        />
+        <Stack.Screen
+          name="exacta_box"
+          component={ExactaBox}
+          options={{ title: "馬単フォーメーション" }}
         />
 
         <Stack.Screen

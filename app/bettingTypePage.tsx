@@ -8,7 +8,7 @@ const bettingOptions = [
     { id: "3", label: "枠連", screen: "WakurenScreen" },
     { id: "4", label: "馬連", screen: "quinellaBeddingType" },
     { id: "5", label: "ワイド", screen: "WideScreen" },
-    { id: "6", label: "馬単", screen: "UmatanScreen" },
+    { id: "6", label: "馬単", screen: "exacta_betting_type" },
     { id: "7", label: "3連複", screen: "trifectaBeddingType" },
     { id: "8", label: "3連単", screen: "SanrentanScreen" },
 ];
