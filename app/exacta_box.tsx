@@ -139,7 +139,7 @@ export default function ExactaBox() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>馬連ボックス</Text>
+            <Text style={styles.title}>馬単ボックス</Text>
 
             {/* 馬番号を表示 */}
             <FlatList
