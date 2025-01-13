@@ -3,13 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "trifecta_formation" },
-  { id: "2", label: "ボックス",screen: "trifecta_combination" },
+  { id: "1", label: "フォーメーション", screen: "tricast_formation" },
+  { id: "2", label: "ボックス",screen: "tricast_combination" },
   { id: "3", label: "軸 1 頭流し" },
   { id: "4", label: "軸 2 頭流し" },
 ];
 
-export default function TrifectaBeddingType() {
+export default function TricastBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
   const { round, place, race,dayCount } = route.params || {}; 
@@ -32,7 +32,7 @@ export default function TrifectaBeddingType() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>三連複式別</Text>
+      <Text style={styles.title}>３連単式別</Text>
       <Text>選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}</Text>
       <FlatList
         data={options}

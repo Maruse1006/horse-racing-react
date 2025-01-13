@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function Layout() {
   const menuItems = [
     { id: "1", title: "血統検索", icon: "📋", screen: "blood" },
-    { id: "2", title: "収支登録", icon: "📈" },
+    { id: "2", title: "収支登録", icon: "📈" , screen: "buy"},
     { id: "3", title: "レーシングカレンダー", icon: "📅" },
     { id: "4", title: "レース結果", icon: "🏆" },
   ];
@@ -40,7 +40,7 @@ export default function Layout() {
         resizeMode="cover"
       >
         <View style={styles.content}>
-          <Text style={styles.title}>中央競馬研究アプリ</Text>
+          <Text style={styles.title}>競馬ラボ</Text>
           <FlatList
             data={menuItems}
             renderItem={renderMenuItem}

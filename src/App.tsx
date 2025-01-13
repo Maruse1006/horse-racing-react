@@ -4,10 +4,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // 各画面をインポート
 import RaceSelectionScreen from "../app/buy/index";
-import BettingOptionsScreen from "../app/bettingTypePage";
+import BettingOptionsScreen from "../app/buy/betting_type_page/index";
 import TrifectaBeddingType from "../app/trifecta/trifectaBeddingType";
 import TrifectaCombination from "../app/trifecta_formation";
-import Blood from "../app/blood";
+import Blood from "../app/blood/index";
 import Layout from "../app/(tabs)/_layout";
 import WinBet from "../app/winBet";
 import PlaceBet from "../app/placeBet";
@@ -22,6 +22,8 @@ import QuinellaSingleAxisScreen from "../app/quinella_single_axis";
 import ExactaBeddingType from "../app/exacta_betting_type";
 import ExactaFormationScreen from "../app/exacta_formation";
 import ExactaBox from "../app/exacta_box";
+import TricastBeddingType from "../app/tricast_betting_type";
+import TricastFormationScreen from "../app/tricast_formation";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,12 +45,17 @@ export default function App() {
           options={{ title: "血統検索" }}
         />
         <Stack.Screen
+          name="buy"
+          component={RaceSelectionScreen}
+          options={{ title: "血統検索" }}
+        />
+        <Stack.Screen
           name="RaceSelection"
           component={RaceSelectionScreen}
           options={{ title: "レース選択" }}
         />
         <Stack.Screen
-          name="bettingTypePage"
+          name="betting_type_page"
           component={BettingOptionsScreen}
           options={{ title: "式別" }}
         />
@@ -70,8 +77,14 @@ export default function App() {
         <Stack.Screen
           name="trifecta_formation"
           component={TrifectaCombination}
-          options={{ title: "三連複組み合わせ" }}
+          options={{ title: "三連複フォーメーション" }}
         />
+        <Stack.Screen
+          name="trifecta_combination"
+          component={TrioCombinationScreen}
+          options={{ title: "三連複ボックス" }}
+        />
+
         <Stack.Screen
           name="quinellaBeddingType"
           component={QuinellaBeddingType}
@@ -92,21 +105,41 @@ export default function App() {
           component={ExactaBox}
           options={{ title: "馬単フォーメーション" }}
         />
+        <Stack.Screen
+          name="quinella_single_axis"
+          component={QuinellaSingleAxisScreen}
+          options={{ title: "馬連１頭軸流し" }}
+        />
 
         <Stack.Screen
           name="quinella_formation_bet"
           component={QuinellaFormationScreen}
-          options={{ title: "三連複組み合わせ" }}
+          options={{ title: "馬連フォーメーション" }}
         />
         <Stack.Screen
           name="quinella_box"
           component={TrioBoxScreen}
-          options={{ title: "三連複組み合わせ" }}
+          options={{ title: "馬連ボックス" }}
         />
         <Stack.Screen
           name="quinella_single_axis"
           component={QuinellaSingleAxisScreen}
-          options={{ title: "三連複組み合わせ" }}
+          options={{ title: "馬連１頭軸流し" }}
+        />
+        <Stack.Screen
+          name="tricast_betting_type"
+          component={TricastBeddingType}
+          options={{ title: "三連単式別" }}
+        />
+        <Stack.Screen
+          name="tricast_formation"
+          component={TricastFormationScreen}
+          options={{ title: "三連単フォーメーション" }}
+        />
+        <Stack.Screen
+          name="tricast_combination"
+          component={TrioBoxScreen}
+          options={{ title: "三連単フォーメーション" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

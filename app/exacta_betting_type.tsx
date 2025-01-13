@@ -5,7 +5,7 @@ import { useNavigation, useRoute} from "@react-navigation/native";
 const options = [
   { id: "1", label: "フォーメーション", screen: "exacta_formation" },
   { id: "2", label: "ボックス",screen: "exacta_box" },
-  { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
+  { id: "3", label: "軸 1 頭流し",screen: "exacta_single_axis" },
 ];
 
 export default function ExactaBeddingType() {

@@ -1,8 +1,8 @@
 // Layout.tsx
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native';
-import RequestButton from '../components/RequestButton';
-import PedigreeTable from '../components/PedigreeTable ';
+import RequestButton from '../../components/RequestButton';
+import PedigreeTable from '../../components/PedigreeTable ';
 
 export default function Blood() {
   const [pedigreeData, setPedigreeData] = useState([]);

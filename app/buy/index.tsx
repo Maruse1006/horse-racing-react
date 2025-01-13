@@ -86,7 +86,7 @@ const handleSubmit = () => {
       return;
     }
 
-    navigation.navigate("bettingTypePage", {
+    navigation.navigate("betting_type_page", {
       dayCount: dayCount,
       place: selectedPlace,
       race: selectedRace,
@@ -132,9 +132,6 @@ const handleSubmit = () => {
       <Text style={styles.label}>
         選択されたレース: {selectedRace || "未選択"}
       </Text>
-
-      {/* 提出ボタン */}
-      <Button title="レースを確認" onPress={handleSubmit} />
 
       {/* 式別画面への遷移ボタン */}
       <Button
