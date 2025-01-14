@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RaceSelectionScreen from "../app/buy/index";
 import BettingOptionsScreen from "../app/buy/betting_type_page/index";
 import TrifectaBeddingType from "../app/trifecta/trifectaBeddingType";
-import TrifectaCombination from "../app/trifecta_formation";
+import TrifectaCombination from "../app/tricastFormation";
 import Blood from "../app/blood/index";
 import Layout from "../app/(tabs)/_layout";
 import WinBet from "../app/winBet";
@@ -22,8 +22,12 @@ import QuinellaSingleAxisScreen from "../app/quinella_single_axis";
 import ExactaBeddingType from "../app/exacta_betting_type";
 import ExactaFormationScreen from "../app/exacta_formation";
 import ExactaBox from "../app/exacta_box";
-import TricastBeddingType from "../app/tricast_betting_type";
-import TricastFormationScreen from "../app/tricast_formation";
+import TrifectaBettingType from "../app/trifectaBettingType";
+import TricastFormationScreen from "../app/trifectaFormation";
+import TricastBeddingType from "../app/tricastBettingType";
+import TricastBettingType from "../app/tricastFormation";
+import TrioFirstKeyScreen from "../app/trifectaFirstkey";
+import TrioSecondKeyScreen from "../app/trifectaSecondKey";
 
 const Stack = createNativeStackNavigator();
 
@@ -127,19 +131,44 @@ export default function App() {
           options={{ title: "馬連１頭軸流し" }}
         />
         <Stack.Screen
-          name="tricast_betting_type"
-          component={TricastBeddingType}
+          name="trifectaBettingType"
+          component={TrifectaBettingType}
           options={{ title: "三連単式別" }}
         />
         <Stack.Screen
-          name="tricast_formation"
+          name="trifectaFormation"
           component={TricastFormationScreen}
           options={{ title: "三連単フォーメーション" }}
         />
         <Stack.Screen
-          name="tricast_combination"
+          name="trifectaCombination"
           component={TrioBoxScreen}
           options={{ title: "三連単フォーメーション" }}
+        />
+        <Stack.Screen
+          name="tricastBettingType"
+          component={TricastBeddingType}
+          options={{ title: "三連複式別" }}
+        />
+        <Stack.Screen
+          name="tricastFormation"
+          component={TricastBettingType}
+          options={{ title: "三連複式別" }}
+        />
+        <Stack.Screen
+          name="trifectaCombination"
+          component={TrioBoxScreen}
+          options={{ title: "三連複式別" }}
+        />
+        <Stack.Screen
+          name="trifectaFirstkey"
+          component={TrioFirstKeyScreen}
+          options={{ title: "三連複式別" }}
+        />
+        <Stack.Screen
+          name="trifectaSecondKey"
+          component={TrioSecondKeyScreen}
+          options={{ title: "三連複式別" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

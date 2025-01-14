@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "reac
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function TriFormationScreen() {
+export default function TrioSecondKeyScreen() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
@@ -39,17 +39,18 @@ export default function TriFormationScreen() {
         alert("バックエンドへのリクエストに失敗しました。");
       }
     };
-
-    console.log("Received parameters:", { dayCount, place, race, round });
     fetchHorses(); // データを取得する関数を呼び出し
   }, [dayCount, place, race, round]);
 
-  const toggleSelection = (rowSetter, row, horse) => {
+  const toggleSelection = (rowSetter, row, horse, isSingleSelection = false) => {
     rowSetter((prev) =>
-      prev.includes(horse) ? prev.filter((h) => h !== horse) : [...prev, horse]
+      prev.includes(horse)
+        ? prev.filter((h) => h !== horse) // 解除
+        : isSingleSelection
+        ? [horse] // 1頭だけ選択
+        : [...prev, horse] // 複数選択
     );
   };
-
   const selectAll = (rowSetter) => {
     rowSetter(horses.map((horse) => horse.number)); // 馬番号で全選択
   };
@@ -64,7 +65,8 @@ export default function TriFormationScreen() {
       for (let b of secondRow) {
         for (let c of thirdRow) {
           if (a !== b && a !== c && b !== c) {
-            combinations.push([a, b, c]);
+            const sortedBC = [b, c].sort((x, y) => x - y);
+            combinations.push([a, ...sortedBC]);
           }
         }
       }
@@ -146,7 +148,7 @@ export default function TriFormationScreen() {
   return (
 <ScrollView>
   <View style={styles.container}>
-    <Text style={styles.title}>三連単フォーメーション</Text>
+    <Text style={styles.title}>三連単１着流し</Text>
     <Text>
       選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
     </Text>
@@ -191,7 +193,7 @@ export default function TriFormationScreen() {
               styles.horseItem,
               secondRow.includes(item.number) && styles.selectedHorse,
             ]}
-            onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
+            onPress={() => toggleSelection(setSecondRow, secondRow, item.number,true)}
           >
             <Text style={styles.horseText}>
               {item.number}. {item.name}
