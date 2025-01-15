@@ -6,9 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TrioSecondKeyScreen() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
-  const [firstRow, setFirstRow] = useState([]);
-  const [secondRow, setSecondRow] = useState([]);
-  const [thirdRow, setThirdRow] = useState([]);
+  const [firstRow, setFirstRow] = useState([]); // 1着候補
+  const [secondRow, setSecondRow] = useState([]); // 2・3着候補
   const [payout, setPayout] = useState(0); // 払い戻し金額
 
   const navigation = useNavigation();
@@ -51,6 +50,7 @@ export default function TrioSecondKeyScreen() {
         : [...prev, horse] // 複数選択
     );
   };
+
   const selectAll = (rowSetter) => {
     rowSetter(horses.map((horse) => horse.number)); // 馬番号で全選択
   };
@@ -61,19 +61,27 @@ export default function TrioSecondKeyScreen() {
 
   const calculateCombinations = () => {
     const combinations = [];
-    for (let a of firstRow) {
-      for (let b of secondRow) {
-        for (let c of thirdRow) {
-          if (a !== b && a !== c && b !== c) {
-            const sortedBC = [b, c].sort((x, y) => x - y);
-            combinations.push([a, ...sortedBC]);
+  
+    for (let fixedSecond of firstRow) { // 2着を固定 (firstRow)
+      for (let i = 0; i < secondRow.length; i++) { // secondRowで1着を選ぶ
+        for (let j = 0; j < secondRow.length; j++) { // secondRowで3着を選ぶ
+          if (i !== j) { // 1着と3着が同じ馬でないようにする
+            const first = secondRow[i]; // 1着
+            const third = secondRow[j]; // 3着
+  
+            // 2着(fixedSecond)が1着または3着と同じでないことを確認
+            if (fixedSecond !== first && fixedSecond !== third) {
+              combinations.push([first, fixedSecond, third]); // 組み合わせを作成
+              console.log(combinations)
+            }
           }
         }
       }
     }
-    return Array.from(new Set(combinations.map(JSON.stringify))).map(JSON.parse);
+  
+    return combinations;
   };
-
+    
   const formatToTwoDigits = (value) => {
     if (typeof value === "string" && !isNaN(value)) {
       return value.padStart(2, "0");
@@ -98,7 +106,6 @@ export default function TrioSecondKeyScreen() {
 
   const checkPayout = async () => {
     try {
-      // トークンからユーザーIDを取得
       const token = await AsyncStorage.getItem('token');
       if (!token) {
         alert('ログインしてください。');
@@ -110,6 +117,7 @@ export default function TrioSecondKeyScreen() {
         alert('ユーザー認証に問題があります。');
         return;
       }
+
 
       const formattedPayload = {
         userId, 
@@ -146,104 +154,72 @@ export default function TrioSecondKeyScreen() {
   };
 
   return (
-<ScrollView>
-  <View style={styles.container}>
-    <Text style={styles.title}>三連単１着流し</Text>
-    <Text>
-      選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-    </Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>三連単１着流し</Text>
+    
+        {/* 1列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>1着</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  firstRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setFirstRow, firstRow, item.number, true)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+          </View>
+        </View>
 
-    {/* 1列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>1頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              firstRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+        {/* 2列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>2・3着</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  secondRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
+          </View>
+        </View>
+
+        <Text style={styles.result}>
+          総組み合わせ数: {calculateCombinations().length}
+        </Text>
+        <Button title="払い戻し金額を確認" onPress={checkPayout} />
+        <Text style={styles.result}>
+          払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
+        </Text>
       </View>
-    </View>
-
-    {/* 2列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>2頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              secondRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setSecondRow, secondRow, item.number,true)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
-      </View>
-    </View>
-
-    {/* 3列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>3頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              thirdRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setThirdRow, thirdRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setThirdRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setThirdRow)} />
-      </View>
-    </View>
-
-    {/* 結果表示 */}
-    <Text style={styles.result}>
-      総組み合わせ数: {calculateCombinations().length}
-    </Text>
-    <Button title="払い戻し金額を確認" onPress={checkPayout} />
-    <Text style={styles.result}>
-      払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
-    </Text>
-  </View>
-</ScrollView>
+    </ScrollView>
   );
 }
 
