@@ -7,7 +7,9 @@ const options = [
   { id: "2", label: "ボックス",screen: "trifectaCombination" },
   { id: "3", label: "1着流し",screen: "trifectaFirstkey"},
   { id: "4", label: "2着流し",screen: "trifectaSecondKey" },
+  { id: "5", label: "3着流し",screen: "trifectaThirdKey" },
 ];
+
 
 export default function TrifectaBettingType() {
   const navigation = useNavigation();

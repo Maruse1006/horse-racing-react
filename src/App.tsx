@@ -28,6 +28,7 @@ import TricastBeddingType from "../app/tricastBettingType";
 import TricastBettingType from "../app/tricastFormation";
 import TrioFirstKeyScreen from "../app/trifectaFirstkey";
 import TrioSecondKeyScreen from "../app/trifectaSecondKey";
+import TrioThirdKeyScreen from "../app/trifectaThirdKey";
 
 const Stack = createNativeStackNavigator();
 
@@ -168,6 +169,11 @@ export default function App() {
         <Stack.Screen
           name="trifectaSecondKey"
           component={TrioSecondKeyScreen}
+          options={{ title: "三連複式別" }}
+        />
+        <Stack.Screen
+          name="trifectaThirdKey"
+          component={TrioThirdKeyScreen}
           options={{ title: "三連複式別" }}
         />
       </Stack.Navigator>
