@@ -29,6 +29,7 @@ import TricastBettingType from "../app/tricastFormation";
 import TrioFirstKeyScreen from "../app/trifectaFirstkey";
 import TrioSecondKeyScreen from "../app/trifectaSecondKey";
 import TrioThirdKeyScreen from "../app/trifectaThirdKey";
+import wideQuinellaBettingType from "../app/wideQuinellaBettingType";
 
 const Stack = createNativeStackNavigator();
 
@@ -176,6 +177,17 @@ export default function App() {
           component={TrioThirdKeyScreen}
           options={{ title: "三連複式別" }}
         />
+        <Stack.Screen
+          name="wideQuinellaBettingType"
+          component={wideQuinellaBettingType}
+          options={{ title: "ワイド式別" }}
+        />
+        <Stack.Screen
+          name="wideQuinellaFormation"
+          component={wideQuinellaBettingType}
+          options={{ title: "ワイドフォーメーション" }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
