@@ -187,6 +187,12 @@ export default function App() {
           component={wideQuinellaBettingType}
           options={{ title: "ワイドフォーメーション" }}
         />
+        <Stack.Screen
+          name="wideQuinellaBox"
+          component={wideQuinellaBettingType}
+          options={{ title: "ワイドフォーメーション" }}
+        />
+
 
       </Stack.Navigator>
     </NavigationContainer>

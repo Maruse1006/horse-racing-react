@@ -4,7 +4,7 @@ import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
   { id: "1", label: "フォーメーション", screen: "wideQuinellaFormation" },
-  { id: "2", label: "ボックス",screen: "quinella_box" },
+  { id: "2", label: "ボックス",screen: "wideQuinellaBox" },
   { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
 ];
 
