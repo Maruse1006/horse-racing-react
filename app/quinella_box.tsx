@@ -265,5 +265,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
+  row:{
+    flexDirection:"row",
+    justifyContent: "space-between",
+    paddingVertical: 8
+  }
 
 });

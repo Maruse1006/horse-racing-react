@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -9,7 +9,8 @@ export default function QuinellaSingleAxisScreen() {
   const [firstRow, setFirstRow] = useState([]); // 1列目の選択状態
   const [secondRow, setSecondRow] = useState([]); // 2列目の選択状態
   const [payout, setPayout] = useState(0); // 払い戻し金額
-
+  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
+  const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const navigation = useNavigation();
   const route = useRoute();
   const { dayCount, place, race, round } = route.params || {};
@@ -114,6 +115,22 @@ export default function QuinellaSingleAxisScreen() {
         return;
       }
 
+      const combinationsWithBetAmounts = calculateCombinations(
+        
+      ).map((combination) => {
+        const combinationKey = combination.join(",");
+        const betAmount = betAmounts[combinationKey] || "0";
+
+        // ログ: 各組み合わせと賭け額
+        console.log("組み合わせ:", combination, "→ キー:", combinationKey, "→ 賭け額:", betAmount);
+
+        return {
+          combination,
+          betAmount,
+        };
+      });
+
+
       const formattedPayload = {
         userId,
         name: "馬連",
@@ -121,7 +138,7 @@ export default function QuinellaSingleAxisScreen() {
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: calculateCombinations(),
+        combinations: combinationsWithBetAmounts
       };
 
       console.log("Payload being sent:", formattedPayload);
@@ -146,6 +163,15 @@ export default function QuinellaSingleAxisScreen() {
       console.error("エラーが発生しました:", error);
       alert("バックエンドへのリクエストに失敗しました。");
     }
+  };
+
+  const combinations = calculateCombinations();
+
+  const handleBetAmountChange = (combinationKey: string, value: string) => {
+    setBetAmounts((prev) => ({
+      ...prev,
+      [combinationKey]: value,
+    }));
   };
 
   return (
@@ -213,6 +239,27 @@ export default function QuinellaSingleAxisScreen() {
         <Text style={styles.result}>
           総組み合わせ数: {calculateCombinations().length}
         </Text>
+        <FlatList
+                data={combinations}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => {
+                  const combinationKey = item.join(",");
+                  return (
+                    <View style={styles.row}>
+                      <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+                      <TextInput
+                        style={[styles.column, styles.input]}
+                        keyboardType="numeric"
+                        placeholder="賭け額"
+                        value={betAmounts[combinationKey] || ""}
+                        onChangeText={(value) =>
+                          handleBetAmountChange(combinationKey, value)
+                        }
+                      />
+                    </View>
+                  );
+                }}
+              />
         <Button title="払い戻し金額を確認" onPress={checkPayout} />
         <Text style={styles.result}>
           払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
