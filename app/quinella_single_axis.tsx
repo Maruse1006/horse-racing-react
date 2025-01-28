@@ -245,7 +245,7 @@ export default function QuinellaSingleAxisScreen() {
                 renderItem={({ item }) => {
                   const combinationKey = item.join(",");
                   return (
-                    <View style={styles.row}>
+                    <View style={styles.rowCom}>
                       <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
                       <TextInput
                         style={[styles.column, styles.input]}
@@ -281,8 +281,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: "center",
   },
-  row: {
-    marginBottom: 16,
+  rowCom: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+
+
   },
   label: {
     fontSize: 18,

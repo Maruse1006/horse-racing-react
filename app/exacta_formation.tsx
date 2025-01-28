@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -9,7 +9,7 @@ export default function ExactaFormationScreen() {
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
   const [payout, setPayout] = useState(0); // 払い戻し金額
-
+  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
   const navigation = useNavigation();
   const route = useRoute();
   const { dayCount, place, race, round } = route.params || {};
@@ -61,8 +61,8 @@ export default function ExactaFormationScreen() {
     const combinations = [];
     for (let a of firstRow) {
       for (let b of secondRow) {
-          if (a !== b ) {
-            combinations.push([a, b].sort((x, y) => x - y));
+        if (a !== b) {
+          combinations.push([a, b].sort((x, y) => x - y));
         }
       }
     }
@@ -106,15 +106,33 @@ export default function ExactaFormationScreen() {
         return;
       }
 
+      const combinationsWithBetAmounts = calculateCombinations(
+        
+      ).map((combination) => {
+        const combinationKey = combination.join(",");
+        const betAmount = betAmounts[combinationKey] || "0";
+
+        // ログ: 各組み合わせと賭け額
+        console.log("組み合わせ:", combination, "→ キー:", combinationKey, "→ 賭け額:", betAmount);
+
+        return {
+          combination,
+          betAmount,
+        };
+      });
+
+
       const formattedPayload = {
-        userId, 
+        userId,
         name: "馬単",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: calculateCombinations(),
+        combinations:combinationsWithBetAmounts
       };
+
+
 
       console.log("Payload being sent:", formattedPayload);
 
@@ -140,78 +158,106 @@ export default function ExactaFormationScreen() {
     }
   };
 
+  const handleBetAmountChange = (combinationKey: string, value: string) => {
+    setBetAmounts((prev) => ({
+      ...prev,
+      [combinationKey]: value,
+    }));
+  };
+
+  const combinations = calculateCombinations();
+
+
   return (
-<ScrollView>
-  <View style={styles.container}>
-    <Text style={styles.title}>馬単</Text>
-    <Text>
-      選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-    </Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>馬単</Text>
+        {/* 1列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>1頭目</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  firstRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+          </View>
+        </View>
 
-    {/* 1列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>1頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              firstRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+        {/* 2列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>2頭目</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  secondRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
+          </View>
+        </View>
+
+        {/* 結果表示 */}
+        <Text style={styles.result}>
+          総組み合わせ数: {calculateCombinations().length}
+        </Text>
+        <FlatList
+          data={combinations}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => {
+            const combinationKey = item.join(",");
+            return (
+              <View style={styles.row}>
+                <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+                <TextInput
+                  style={[styles.column, styles.input]}
+                  keyboardType="numeric"
+                  placeholder="賭け額"
+                  value={betAmounts[combinationKey] || ""}
+                  onChangeText={(value) =>
+                    handleBetAmountChange(combinationKey, value)
+                  }
+                />
+              </View>
+            );
+          }}
+        />
+
+        <Button title="払い戻し金額を確認" onPress={checkPayout} />
+        <Text style={styles.result}>
+          払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
+        </Text>
       </View>
-    </View>
-
-    {/* 2列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>2頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              secondRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
-      </View>
-    </View>
-
-    {/* 結果表示 */}
-    <Text style={styles.result}>
-      総組み合わせ数: {calculateCombinations().length}
-    </Text>
-    <Button title="払い戻し金額を確認" onPress={checkPayout} />
-    <Text style={styles.result}>
-      払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
-    </Text>
-  </View>
-</ScrollView>
+    </ScrollView>
   );
 }
 
@@ -259,4 +305,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    textAlign: "right",
+    fontSize: 16,
+  },
+
 });
