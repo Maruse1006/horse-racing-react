@@ -59,7 +59,7 @@ function MainStack() {
   );
 }
 
-// ✅ App全体（Drawerに「メインメニュー」だけ表示、ヘッダーも表示）
+
 export default function App() {
   return (
     <NavigationContainer>
