@@ -1,0 +1,31 @@
+// expo.config.js
+export default {
+    expo: {
+      name: "keiba_react",
+      slug: "keiba_react",
+      version: "1.0.0",
+      orientation: "portrait",
+      icon: "./assets/images/icon.png",
+      scheme: "myapp",
+      userInterfaceStyle: "automatic",
+      splash: {
+        image: "./assets/images/splash.png",
+        resizeMode: "contain",
+        backgroundColor: "#ffffff"
+      },
+      ios: {
+        supportsTablet: true
+      },
+      android: {
+        adaptiveIcon: {
+          foregroundImage: "./assets/images/adaptive-icon.png",
+          backgroundColor: "#ffffff"
+        }
+      },
+      experiments: {
+        typedRoutes: true
+      },
+      entryPoint: "./src/App.tsx"
+    }
+  }
+  

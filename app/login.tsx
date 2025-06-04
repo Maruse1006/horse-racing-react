@@ -21,7 +21,7 @@ export default function LoginScreen(): JSX.Element {
     setMessage(''); // メッセージをリセット
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/login', {
+      const response = await fetch('http://192.168.3.160:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,8 +29,11 @@ export default function LoginScreen(): JSX.Element {
         body: JSON.stringify({ email, password }),
       });
 
+      const text = await response.text(); // JSONじゃなくても確認できるようにする
+      console.log('Raw response:', text);
+
       if (response.ok) {
-        const data = await response.json();
+        const data = JSON.parse(text);
         setMessage('Login successful!');
         await AsyncStorage.setItem('token', data.token);
         console.log('Token:', data.token); // トークンを保存（例: ローカルストレージ）
@@ -42,6 +45,7 @@ export default function LoginScreen(): JSX.Element {
         setMessage(error.message || 'Login failed!');
       }
     } catch (err) {
+      console.error('Error during login:', err); 
       setMessage('An error occurred. Please try again later.');
     }
   };

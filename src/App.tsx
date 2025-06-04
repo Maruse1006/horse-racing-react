@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, ActivityIndicator } from "react-native";
 
-// 各画面をインポート
-import LoginScreen from "../app/login";
+// 画面コンポーネントのインポート
+import Register from "../app/register";
 import Dashboard from "../app/dashboard";
+import Home from "../app/home";
+import LoginScreen from "../app/login";
 import Blood from "../app/blood/index";
 import RaceSelectionScreen from "../app/buy/index";
 import WinBet from "../app/winBet";
@@ -26,15 +30,16 @@ import ExactaBox from "../app/exacta_box";
 import ExactaFormationScreen from "../app/exacta_formation";
 import QuinellaBeddingType from "../app/quinellaBeddingType";
 import BettingOptionsScreen from "../app/betting_type_page";
-
-const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
 
-// ✅ StackNavigator（画面遷移用）※ヘッダーは表示しない
+// ログイン後の画面をまとめたStack Navigator
 function MainStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen name="dashboad" component={Dashboard} />
+      <Stack.Screen name="Blood" component={Blood} />
+      <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="RaceSelection" component={RaceSelectionScreen} />
       <Stack.Screen name="WinBet" component={WinBet} />
@@ -55,42 +60,80 @@ function MainStack() {
       <Stack.Screen name="ExactaFormation" component={ExactaFormationScreen} />
       <Stack.Screen name="QuinellaBeddingType" component={QuinellaBeddingType} />
       <Stack.Screen name="betting_type_page" component={BettingOptionsScreen} />
+
     </Stack.Navigator>
   );
 }
 
+// ログイン済みのDrawer構成
+function LoggedInDrawer() {
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: true,
+        drawerType: "slide",
+        drawerStyle: {
+          width: 240,
+          backgroundColor: "#fff",
+        },
+        headerTitleAlign: "center",
+        headerTitle: "horse",
+        headerTitleStyle: { fontSize: 18, fontWeight: "bold" },
+      }}
+    >
+      <Drawer.Screen name="MainStack" component={MainStack} options={{ title: "メインメニュー" }} />
+      <Drawer.Screen name="Home" component={Home} options={{ title: "ホーム" }} />
+    </Drawer.Navigator>
+  );
+}
+
+// 未ログイン時のDrawer構成
+function AuthDrawer() {
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: true,
+        drawerType: "slide",
+        drawerStyle: {
+          width: 240,
+          backgroundColor: "#fff",
+        },
+        headerTitleAlign: "center",
+        headerTitle: "horse",
+        headerTitleStyle: { fontSize: 18, fontWeight: "bold" },
+      }}
+    >
+      <Drawer.Screen name="Login" component={LoginScreen} options={{ title: "ログイン" }} />
+      <Drawer.Screen name="Register" component={Register} options={{ title: "登録" }} />
+    </Drawer.Navigator>
+  );
+}
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      setIsLoggedIn(!!token);
+      setIsLoading(false);
+    };
+    checkToken();
+  }, []);
+
+  if (isLoading) {
+    // ローディング中は画面を表示しない
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        initialRouteName="MainStack"
-        screenOptions={{
-          headerShown: true, // ← ヘッダー表示ON
-          headerTitle: "メインメニュー", // ← ヘッダー中央のタイトル
-          headerTitleAlign: "center", // ← 中央揃え
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: "bold",
-          },
-          drawerType: "slide",
-          drawerStyle: {
-            width: 240,
-            backgroundColor: "#fff",
-          },
-        }}
-      >
-        <Drawer.Screen
-          name="MainStack"
-          component={MainStack}
-          options={{ title: "メインメニュー" }} // Drawerラベルにも表示
-        />
-        <Drawer.Screen
-    name="Login"
-    component={LoginScreen}
-    options={{ title: "ログイン" }}
-  />
-      </Drawer.Navigator>
+      {isLoggedIn ? <LoggedInDrawer /> : <AuthDrawer />}
     </NavigationContainer>
   );
 }

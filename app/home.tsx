@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Layout() {
+export default function Home() {
   const navigation = useNavigation();  // Navigationの呼び出しを修正
 
   const menuItems = [
@@ -24,7 +24,10 @@ export default function Layout() {
       style={styles.menuItem}
       onPress={() => {
         if (item.screen) {
-          navigation.navigate(item.screen);
+          // navigation.navigate(item.screen);
+          navigation.navigate("MainStack", {
+            screen: item.screen
+          });
         }
       }}
     >
@@ -36,7 +39,7 @@ export default function Layout() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../../assets/images/back.jpg")}
+        source={require("../assets/images/back.jpg")}
         style={styles.backgroundImage}
         resizeMode="cover"
       >

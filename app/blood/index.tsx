@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native';
 import RequestButton from '../../components/RequestButton';
 import PedigreeTable from '../../components/PedigreeTable ';
 
+
 export default function Blood() {
   const [pedigreeData, setPedigreeData] = useState([]);
 

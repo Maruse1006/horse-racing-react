@@ -77,4 +77,23 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
   },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    textAlign: "right",
+    fontSize: 16,
+  },
+
+
 });
