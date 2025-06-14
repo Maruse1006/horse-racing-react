@@ -16,7 +16,7 @@ import WinBet from "../app/winBet";
 import PlaceBet from "../app/placeBet";
 import TrifectaBeddingType from "../app/trifecta/trifectaBeddingType";
 import ExactaBeddingType from "../app/exacta_betting_type";
-import wideQuinellaBettingType from "../app/wideQuinellaBettingType";
+import WideQuinellaBettingType from "../app/wideQuinellaBettingType";
 import TrioSecondKeyScreen from "../app/trifectaSecondKey";
 import TrioThirdKeyScreen from "../app/trifectaThirdKey";
 import TrioFirstKeyScreen from "../app/trifectaFirstkey";
@@ -37,7 +37,7 @@ const Stack = createNativeStackNavigator();
 function MainStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="dashboad" component={Dashboard} />
+      <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="Blood" component={Blood} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Login" component={LoginScreen} />
@@ -46,7 +46,7 @@ function MainStack() {
       <Stack.Screen name="PlaceBet" component={PlaceBet} />
       <Stack.Screen name="TrifectaBeddingType" component={TrifectaBeddingType} />
       <Stack.Screen name="ExactaBeddingType" component={ExactaBeddingType} />
-      <Stack.Screen name="WideQuinella" component={wideQuinellaBettingType} />
+      <Stack.Screen name="WideQuinella" component={WideQuinellaBettingType} />
       <Stack.Screen name="TrioSecondKey" component={TrioSecondKeyScreen} />
       <Stack.Screen name="TrioThirdKey" component={TrioThirdKeyScreen} />
       <Stack.Screen name="TrioFirstKey" component={TrioFirstKeyScreen} />
@@ -83,6 +83,7 @@ function LoggedInDrawer() {
     >
       <Drawer.Screen name="MainStack" component={MainStack} options={{ title: "メインメニュー" }} />
       <Drawer.Screen name="Home" component={Home} options={{ title: "ホーム" }} />
+      <Drawer.Screen name="Dashboard" component={Dashboard} options={{ title: "ダッシュボード" }} />
     </Drawer.Navigator>
   );
 }

@@ -21,7 +21,7 @@ export default function LoginScreen(): JSX.Element {
     setMessage(''); // メッセージをリセット
 
     try {
-      const response = await fetch('http://192.168.3.160:5000/api/login', {
+      const response = await fetch('http://127.0.0.1:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export default function LoginScreen(): JSX.Element {
         console.log('Token:', data.token); // トークンを保存（例: ローカルストレージ）
 
         // ダッシュボード画面に遷移
-        navigation.replace('dashboard');
+        // navigation.replace('dashboard');
       } else {
         const error = await response.json();
         setMessage(error.message || 'Login failed!');

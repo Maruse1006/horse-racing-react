@@ -83,14 +83,15 @@ export default function TrioBoxScreen() {
   const getUserIdFromToken = (token) => {
     if (!token) return null;
     try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
+      const payload = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payload));
+      return decodedPayload.sub; 
     } catch (error) {
       console.error('Invalid token:', error);
       return null;
     }
   };
+
 
   const combinationsWithBetAmounts = generateCombinations(
     selectedHorses
@@ -265,8 +266,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
-  row:{
-    flexDirection:"row",
+  row: {
+    flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 8
   }

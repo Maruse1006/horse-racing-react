@@ -4,7 +4,7 @@ import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
   { id: "1", label: "フォーメーション", screen: "quinella_formation_bet" },
-  { id: "2", label: "ボックス",screen: "quinella_box" },
+  { id: "2", label: "ボックス",screen: "TrioBox" },
   { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
 ];
 
@@ -17,17 +17,21 @@ export default function QuinellaBeddingType() {
     }, [dayCount, place, race]);
 
   const handlePress = (option) => {
-    console.log(`選択されたオプション: ${option.label}`);
-    console.log(`選択されたオプション: ${option.screen}`);
-    if (option.screen) {
-      navigation.navigate(option.screen, {
-        round, 
-        place, 
+  console.log(`選択されたオプション: ${option.label}`);
+  console.log(`選択されたオプション: ${option.screen}`);
+  if (option.screen) {
+    navigation.navigate("MainStack", {
+      screen: option.screen,
+      params: {
+        round,
+        place,
         race,
-        dayCount
-      }); 
-    }
-  };
+        dayCount,
+      },
+    });
+  }
+};
+
 
   return (
     <View style={styles.container}>

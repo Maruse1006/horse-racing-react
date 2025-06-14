@@ -8,7 +8,7 @@ const options = [
   { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
 ];
 
-export default function wideQuinellaBettingType() {
+export default function WideQuinellaBettingType() {
   const navigation = useNavigation();
   const route = useRoute();
   const { round, place, race,dayCount } = route.params || {}; 

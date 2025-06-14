@@ -160,6 +160,13 @@ export default function WinBet() {
                     <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
                     <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
                 </View>
+                <FlatList
+                    data={combinations}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <Text style={styles.combination}>{item.join(", ")}</Text>
+                    )}
+                />
                 <Button title="払い戻し金額を確認" onPress={checkPayout} />
                 <Text style={styles.result}>
                     払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
@@ -214,4 +221,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 16,
     },
+    combination:{
+        
+    }
 });
