@@ -31,4 +31,15 @@ const findActualDate = (calendarData, dateInfo, placeId, round) => {
 };
 
 ```
+calendarDataがオブジェクトでdateという日付を定義
+下の例だと2024-12-06にあたる
+
+```
+export const calendarData = {
+  "2024-12-06": [
+    { placeId: "06", round: "第1回", day: "01" }, // 中山競馬場
+    { placeId: "09", round: "第2回", day: "01" }, // 阪神競馬場
+  ],
+};
+```
 
