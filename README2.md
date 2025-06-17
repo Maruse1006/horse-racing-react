@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+#  VictoryAxisについて
 
 | プロパティ                                    | 説明                                              |
 | ---------------------------------------- | ----------------------------------------------- |
@@ -7,5 +7,28 @@
 
 ```
 <VictoryAxis dependentAxis tickFormat={(y) => y.toLocaleString()} />
+```
+
+## バックエンドから返却された値をカレンダーの日付に対応させる
+横軸に日付を表示させたいが、betsテーブルに格納されているdate_infoは開催日（何日目か）のみ２桁で格納されており、
+calendarData から 該当する開催日（YYYY-MM-DD） を特定する必要がある。
+
+```
+const findActualDate = (calendarData, dateInfo, placeId, round) => {
+  for (const date in calendarData) {
+    const entries = calendarData[date];
+    for (const entry of entries) {
+      if (
+        entry.placeId === placeId &&
+        entry.round === round &&
+        entry.day === dateInfo
+      ) {
+        return date;
+      }
+    }
+  }
+  return null;
+};
+
 ```
 
