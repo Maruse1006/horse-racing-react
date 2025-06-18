@@ -43,3 +43,23 @@ export const calendarData = {
 };
 ```
 
+縦軸の表示について
+```
+const step = Math.pow(10, Math.floor(Math.log10(max)) - 1);
+```
+①
+max の 桁数を求める。
+例: max = 123456 → log10(123456) ≒ 5.09
+
+②
+Math.floor(Math.log10(max)) - 1
+目盛の単位を1桁下げて、ちょうどいい間隔に調整。
+
+例: log10(123456) ≒ 5.09 → Math.floor(...) = 5 → 5 - 1 = 4
+
+③
+Math.pow(10, ...)
+ステップ値（間隔）を 10のべき乗で生成。
+
+例: 10^4 = 10000 → 目盛の間隔は1万ずつ
+
