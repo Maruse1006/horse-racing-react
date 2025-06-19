@@ -14,8 +14,10 @@ import {
   VictoryScatter,
 } from "victory";
 import { calendarData } from "../data/calendarData";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Dashboard() {
+  const navigation = useNavigation();
   const [summary, setSummary] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [maxY, setMaxY] = useState(0);
@@ -30,12 +32,24 @@ export default function Dashboard() {
           return;
         }
 
+        
+
         const response = await fetch("http://127.0.0.1:5000/api/bet-summary", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+         if (response.status === 401) {
+        // トークン無効 ⇒ ログアウト処理
+        await AsyncStorage.removeItem("token");
+        Alert.alert("セッション切れ", "再度ログインしてください。");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        });
+        return;
+      }
 
         const data = await response.json();
         setSummary(data);
