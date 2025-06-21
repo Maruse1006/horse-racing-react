@@ -29,6 +29,7 @@ export default function RaceSelectionScreen() {
   const getDayCountAndRound = (date: string | null, placeId: string | null) => {
     if (!date || !placeId || !calendarData[date]) return { day: null, round: null };
     const schedule = calendarData[date].find((entry) => entry.placeId === placeId);
+    const year = schedule?.year;
     return schedule
       ? { day: schedule.day, round: schedule.round }
       : { day: null, round: null };
