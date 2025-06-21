@@ -16,11 +16,11 @@ const bettingOptions = [
 export default function BettingOptionsScreen() {
     const navigation = useNavigation<any>();
     const route = useRoute();
-    const { round, place, race, dayCount } = route.params || {};
+    const { year,round, place, race, dayCount } = route.params || {};
 
     useEffect(() => {
-        console.log("Received parameters:", { round, place, race, dayCount });
-    }, [round, place, race, dayCount]);
+        console.log("Received parameters:", { year,round, place, race, dayCount });
+    }, [year,round, place, race, dayCount]);
 
     // ✅ 必ずここで関数定義
     const handleOptionPress = (screen: string) => {
@@ -30,6 +30,7 @@ export default function BettingOptionsScreen() {
                 round,
                 place,
                 race,
+                year,
                 dayCount,
             },
         });

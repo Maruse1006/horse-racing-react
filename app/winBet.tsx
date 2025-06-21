@@ -10,8 +10,8 @@ export default function WinBet() {
     const [payout, setPayout] = useState(0); // 払い戻し金額
     const navigation = useNavigation();
     const route = useRoute();
-    const { dayCount, place, race, round } = route.params || {};
-
+    const { year,dayCount, place, race, round } = route.params || {};
+dayCount
     useEffect(() => {
         // 馬データをバックエンドから取得
         const fetchHorses = async () => {
@@ -21,7 +21,7 @@ export default function WinBet() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ dayCount, place, race, round }),
+                    body: JSON.stringify({ year,dayCount, place, race, round }),
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -37,9 +37,9 @@ export default function WinBet() {
             }
         };
 
-        console.log("Received parameters:", { dayCount, place, race, round });
+        console.log("Received parameters:", { year,dayCount, place, race, round });
         fetchHorses(); // データを取得する関数を呼び出し
-    }, [dayCount, place, race, round]);
+    }, [year,dayCount, place, race, round]);
 
     const toggleSelection = (rowSetter, row, horse) => {
         rowSetter((prev) =>
@@ -164,7 +164,7 @@ export default function WinBet() {
                     data={combinations}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        <Text style={styles.combination}>{item.join(", ")}</Text>
+                        <Text style={styles.combination}>{item}</Text>
                     )}
                 />
                 <Button title="払い戻し金額を確認" onPress={checkPayout} />

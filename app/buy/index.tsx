@@ -7,7 +7,7 @@ import { calendarData, placeData } from "../../data/calendarData";
 
 // ルートパラメーターの型定義
 type RouteParams = {
-  year:string,
+  year: string;
   date: string;
   place: string;
   race: string;
@@ -21,21 +21,29 @@ export default function RaceSelectionScreen() {
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
   const [dayCount, setDayCount] = useState<string | null>(null);
   const [round, setRound] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>(null); // ← 年を管理
 
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProps>();
-  const { year,date, place, race } = route.params || {};
+  const { date, place, race: routeRace, year: routeYear } = route.params || {};
 
-  // 日付と開催場所に対応する day/round を取得
+  // 日付と開催場所に対応する day/round/year を取得
   const getDayCountAndRound = (date: string | null, placeId: string | null) => {
-    if (!date || !placeId || !calendarData[date]) return { day: null, round: null };
+    if (!date || !placeId || !calendarData[date])
+      return { day: null, round: null, year: null };
+
     const schedule = calendarData[date].find((entry) => entry.placeId === placeId);
-    const year = schedule?.year;
+
     return schedule
-      ? { day: schedule.day, round: schedule.round }
-      : { day: null, round: null };
+      ? {
+          day: schedule.day,
+          round: schedule.round,
+          year: schedule.year ?? date.split("-")[0],
+        }
+      : { day: null, round: null, year: null };
   };
 
+  // 選択した日付の開催場所一覧を取得
   const getPlacesForDate = (date: string | null) => {
     if (!date || !calendarData[date]) return [];
     return calendarData[date]
@@ -48,11 +56,13 @@ export default function RaceSelectionScreen() {
       .filter(Boolean) as { label: string; value: string }[];
   };
 
+  // 開催地選択時
   const handlePlaceSelection = (value: string | null) => {
     setSelectedPlace(value);
-    const { day, round } = getDayCountAndRound(selectedDate, value);
+    const { day, round, year } = getDayCountAndRound(selectedDate, value);
     setDayCount(day);
     setRound(round);
+    setYear(year); // ← 追加
   };
 
   const places = getPlacesForDate(selectedDate);
@@ -72,9 +82,9 @@ export default function RaceSelectionScreen() {
     Alert.alert("レース情報", `選択したレースID: ${raceId}`);
   };
 
-  // MainStack 経由で betting_type_page に遷移
+  // 式別画面へ遷移
   const navigateToBettingOptions = () => {
-    if (!selectedDate || !selectedPlace || !selectedRace || !dayCount || !round) {
+    if (!selectedDate || !selectedPlace || !selectedRace || !dayCount || !round || !year) {
       Alert.alert("エラー", "全ての項目を選択してください！");
       return;
     }
@@ -82,11 +92,11 @@ export default function RaceSelectionScreen() {
     navigation.navigate("MainStack", {
       screen: "betting_type_page",
       params: {
-        year:year,
-        dayCount: dayCount,
+        year,
+        dayCount,
         place: selectedPlace,
         race: selectedRace,
-        round: round,
+        round,
       },
     });
   };
