@@ -7,6 +7,7 @@ import { calendarData, placeData } from "../../data/calendarData";
 
 // ルートパラメーターの型定義
 type RouteParams = {
+  year:string,
   date: string;
   place: string;
   race: string;
@@ -23,7 +24,7 @@ export default function RaceSelectionScreen() {
 
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProps>();
-  const { date, place, race } = route.params || {};
+  const { year,date, place, race } = route.params || {};
 
   // 日付と開催場所に対応する day/round を取得
   const getDayCountAndRound = (date: string | null, placeId: string | null) => {
@@ -71,7 +72,7 @@ export default function RaceSelectionScreen() {
     Alert.alert("レース情報", `選択したレースID: ${raceId}`);
   };
 
-  // ✅ 修正ポイント：MainStack 経由で betting_type_page に遷移
+  // MainStack 経由で betting_type_page に遷移
   const navigateToBettingOptions = () => {
     if (!selectedDate || !selectedPlace || !selectedRace || !dayCount || !round) {
       Alert.alert("エラー", "全ての項目を選択してください！");
@@ -81,6 +82,7 @@ export default function RaceSelectionScreen() {
     navigation.navigate("MainStack", {
       screen: "betting_type_page",
       params: {
+        year:year,
         dayCount: dayCount,
         place: selectedPlace,
         race: selectedRace,
