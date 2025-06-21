@@ -5,6 +5,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, ActivityIndicator } from "react-native";
 
+// AuthContext を追加
+import { AuthContext } from "../src/context/AuthContext";
+
 // 画面コンポーネントのインポート
 import Register from "../app/register";
 import Dashboard from "../app/dashboard";
@@ -30,16 +33,17 @@ import ExactaBox from "../app/exacta_box";
 import ExactaFormationScreen from "../app/exacta_formation";
 import QuinellaBeddingType from "../app/quinellaBeddingType";
 import BettingOptionsScreen from "../app/betting_type_page";
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
-// ログイン後の画面をまとめたStack Navigator
+// ログイン後の画面
 function MainStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="Blood" component={Blood} />
-      <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="RaceSelection" component={RaceSelectionScreen} />
       <Stack.Screen name="WinBet" component={WinBet} />
@@ -60,15 +64,15 @@ function MainStack() {
       <Stack.Screen name="ExactaFormation" component={ExactaFormationScreen} />
       <Stack.Screen name="QuinellaBeddingType" component={QuinellaBeddingType} />
       <Stack.Screen name="betting_type_page" component={BettingOptionsScreen} />
-
     </Stack.Navigator>
   );
 }
 
-// ログイン済みのDrawer構成
+// ログイン後の Drawer
 function LoggedInDrawer() {
   return (
     <Drawer.Navigator
+      initialRouteName="Home"
       screenOptions={{
         headerShown: true,
         drawerType: "slide",
@@ -88,7 +92,7 @@ function LoggedInDrawer() {
   );
 }
 
-// 未ログイン時のDrawer構成
+// 未ログイン時
 function AuthDrawer() {
   return (
     <Drawer.Navigator
@@ -110,10 +114,19 @@ function AuthDrawer() {
   );
 }
 
+// エントリーポイント
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // login / logout 関数
+  const login = () => setIsLoggedIn(true);
+  const logout = async () => {
+    await AsyncStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  // 起動時トークン確認
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -124,7 +137,6 @@ export default function App() {
   }, []);
 
   if (isLoading) {
-    // ローディング中は画面を表示しない
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
@@ -133,8 +145,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      {isLoggedIn ? <LoggedInDrawer /> : <AuthDrawer />}
-    </NavigationContainer>
+    <AuthContext.Provider value={{ login, logout }}>
+      <NavigationContainer>
+        {isLoggedIn ? <LoggedInDrawer /> : <AuthDrawer />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native'; // ナビゲーションフックをインポート
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useContext } from "react";
+import { AuthContext } from "../src/context/AuthContext";
 
 // ナビゲーションルート型を定義
 type RootStackParamList = {
@@ -12,6 +14,8 @@ type RootStackParamList = {
 
 export default function LoginScreen(): JSX.Element {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
+  const auth = useContext(AuthContext);
+
   const route = useRoute();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -39,7 +43,7 @@ export default function LoginScreen(): JSX.Element {
         console.log('Token:', data.token); // トークンを保存（例: ローカルストレージ）
 
         // ダッシュボード画面に遷移
-        // navigation.replace('dashboard');
+        auth?.login();
       } else {
         const error = await response.json();
         setMessage(error.message || 'Login failed!');
