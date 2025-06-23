@@ -1,16 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function PlaceBet() {
     const [horses, setHorses] = useState([]); // 馬データ用のステート
     const [combinations, setCombinations] = useState([]);
+    const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
     const [payout, setPayout] = useState(0); // 払い戻し金額
     const navigation = useNavigation();
     const route = useRoute();
-    const { dayCount, place, race, round } = route.params || {};
+    const { year, dayCount, place, race, round } = route.params || {};
 
     useEffect(() => {
         // 馬データをバックエンドから取得
@@ -21,7 +22,7 @@ export default function PlaceBet() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ dayCount, place, race, round }),
+                    body: JSON.stringify({ year, dayCount, place, race, round }),
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -37,9 +38,9 @@ export default function PlaceBet() {
             }
         };
 
-        console.log("Received parameters:", { dayCount, place, race, round });
+        console.log("Received parameters:", { year, dayCount, place, race, round });
         fetchHorses(); // データを取得する関数を呼び出し
-    }, [dayCount, place, race, round]);
+    }, [year, dayCount, place, race, round]);
 
     const toggleSelection = (rowSetter, row, horse) => {
         rowSetter((prev) =>
@@ -55,7 +56,9 @@ export default function PlaceBet() {
         rowSetter([]);
     };
 
-
+    const handleBetAmountChange = (horseNumber: string, value: string) => {
+        setBetAmounts((prev) => ({ ...prev, [horseNumber]: value }));
+    };
     const formatToTwoDigits = (value) => {
         if (typeof value === "string" && !isNaN(value)) {
             return value.padStart(2, "0");
@@ -102,7 +105,8 @@ export default function PlaceBet() {
                 place: formatToTwoDigits(place),
                 race: formatToTwoDigits(race),
                 round: formatToTwoDigits(round),
-                combinations: formatToTwoDigits(combinations)
+                combinations: formatToTwoDigits(combinations),
+                amounts: combinations.map((c) => Number(betAmounts[c] || 0)),
 
             };
 
@@ -139,7 +143,6 @@ export default function PlaceBet() {
                 </Text>
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>1頭目</Text>
                     <FlatList
                         data={horses}
                         numColumns={4}
@@ -157,6 +160,18 @@ export default function PlaceBet() {
                         )}
                     />
                 </View>
+                {combinations.map((number) => (
+                    <View key={number} style={styles.row}>
+                        <Text style={styles.label}>{number}番 </Text>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={styles.input}
+                            value={betAmounts[number] || ""}
+                            onChangeText={(val) => handleBetAmountChange(number, val)}
+                            placeholder="賭け金"
+                        />
+                    </View>
+                ))}
                 <View style={styles.buttonRow}>
                     <Button title="全通り" onPress={() => selectAll(setCombinations)} />
                     <Button title="クリア" onPress={() => clearSelection(setCombinations)} />
@@ -184,11 +199,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     row: {
-        marginBottom: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 10
     },
+
     label: {
-        fontSize: 18,
-        marginBottom: 8,
+        fontSize: 16,
+        flex: 1
     },
     horseItem: {
         flex: 1,
@@ -215,4 +233,8 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 16,
     },
+    input: {
+        marginLeft: 10,
+        flex: 1
+    }
 });
