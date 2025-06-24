@@ -11,23 +11,23 @@ const options = [
 export default function ExactaBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { round, place, race,dayCount } = route.params || {}; 
+  const { year,round, place, race,dayCount } = route.params || {}; 
   React.useEffect(() => {
       console.log("Received parameters:", { dayCount, place, race });
     }, [dayCount, place, race]);
 
-  const handlePress = (option) => {
-    console.log(`選択されたオプション: ${option.label}`);
-    console.log(`選択されたオプション: ${option.screen}`);
-    if (option.screen) {
-      navigation.navigate(option.screen, {
-        round, 
-        place, 
-        race,
-        dayCount
-      }); 
-    }
-  };
+  const handlePress = (screen: string) => {
+        navigation.navigate("MainStack", {
+            screen,
+            params: {
+                round,
+                place,
+                race,
+                year,
+                dayCount,
+            },
+        });
+    };
 
   return (
     <View style={styles.container}>
@@ -39,7 +39,7 @@ export default function ExactaBeddingType() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => handlePress(item)}
+            onPress={() => handlePress(item.screen)}
           >
             <Text style={styles.itemText}>{item.label}</Text>
           </TouchableOpacity>

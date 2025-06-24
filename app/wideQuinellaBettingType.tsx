@@ -3,31 +3,35 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "wideQuinellaFormation" },
-  { id: "2", label: "ボックス",screen: "wideQuinellaBox" },
+  { id: "1", label: "フォーメーション", screen: "WideQuinellaFormation" },
+  { id: "2", label: "ボックス",screen: "WideQuinellaBox" },
   { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
 ];
 
 export default function WideQuinellaBettingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { round, place, race,dayCount } = route.params || {}; 
+  const { year,round, place, race,dayCount } = route.params || {}; 
   React.useEffect(() => {
       console.log("Received parameters:", { dayCount, place, race });
     }, [dayCount, place, race]);
 
   const handlePress = (option) => {
-    console.log(`選択されたオプション: ${option.label}`);
-    console.log(`選択されたオプション: ${option.screen}`);
-    if (option.screen) {
-      navigation.navigate(option.screen, {
-        round, 
-        place, 
+  console.log(`選択されたオプション: ${option.label}`);
+  console.log(`選択されたオプション: ${option.screen}`);
+  if (option.screen) {
+    navigation.navigate("MainStack", {
+      screen: option.screen,
+      params: {
+        year,
+        round,
+        place,
         race,
-        dayCount
-      }); 
-    }
-  };
+        dayCount,
+      },
+    });
+  }
+};
 
   return (
     <View style={styles.container}>

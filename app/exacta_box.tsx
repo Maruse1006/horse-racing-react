@@ -7,7 +7,7 @@ export default function ExactaBox() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
   const [payout, setPayout] = useState(0); // 払い戻し金額
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
 
@@ -22,7 +22,7 @@ export default function ExactaBox() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -38,9 +38,9 @@ export default function ExactaBox() {
       }
     };
 
-    console.log("Received parameters:", { dayCount, place, race, round });
+    console.log("Received parameters:", { year,dayCount, place, race, round });
     fetchHorses(); // データを取得する関数を呼び出し
-  }, [dayCount, place, race, round]);
+  }, [year,dayCount, place, race, round]);
 
   const handleBetAmountChange = (combinationKey: string, value: string) => {
     setBetAmounts((prev) => ({

@@ -33,6 +33,8 @@ import ExactaBox from "../app/exacta_box";
 import ExactaFormationScreen from "../app/exacta_formation";
 import QuinellaBeddingType from "../app/quinellaBeddingType";
 import BettingOptionsScreen from "../app/betting_type_page";
+import WideQuinellaBox from "../app/wideQuinellaBox";
+import WideQuinellaFormation from "../app/wideQuinellaFormation";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -51,6 +53,8 @@ function MainStack() {
       <Stack.Screen name="TrifectaBeddingType" component={TrifectaBeddingType} />
       <Stack.Screen name="ExactaBeddingType" component={ExactaBeddingType} />
       <Stack.Screen name="WideQuinella" component={WideQuinellaBettingType} />
+      <Stack.Screen name="WideQuinellaBox" component={WideQuinellaBox} />
+      <Stack.Screen name="WideQuinellaFormation" component={WideQuinellaFormation} />
       <Stack.Screen name="TrioSecondKey" component={TrioSecondKeyScreen} />
       <Stack.Screen name="TrioThirdKey" component={TrioThirdKeyScreen} />
       <Stack.Screen name="TrioFirstKey" component={TrioFirstKeyScreen} />

@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput }
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function wideQuinellaFormationScreen() {
+export default function WideQuinellaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
@@ -14,7 +14,7 @@ export default function wideQuinellaFormationScreen() {
   
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -25,7 +25,7 @@ export default function wideQuinellaFormationScreen() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -43,7 +43,7 @@ export default function wideQuinellaFormationScreen() {
 
     console.log("Received parameters:", { dayCount, place, race, round });
     fetchHorses(); // データを取得する関数を呼び出し
-  }, [dayCount, place, race, round]);
+  }, [year,dayCount, place, race, round]);
 
   const toggleSelection = (rowSetter, row, horse) => {
     rowSetter((prev) =>
