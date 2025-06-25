@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "quinella_formation_bet" },
+  { id: "1", label: "フォーメーション", screen: "QuinellaFormation" },
   { id: "2", label: "ボックス",screen: "TrioBox" },
   { id: "3", label: "軸 1 頭流し",screen: "quinella_single_axis" },
 ];
@@ -11,7 +11,7 @@ const options = [
 export default function QuinellaBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { round, place, race,dayCount } = route.params || {}; 
+  const { year,round, place, race,dayCount } = route.params || {}; 
   React.useEffect(() => {
       console.log("Received parameters:", { dayCount, place, race });
     }, [dayCount, place, race]);
@@ -23,6 +23,7 @@ export default function QuinellaBeddingType() {
     navigation.navigate("MainStack", {
       screen: option.screen,
       params: {
+        year,
         round,
         place,
         race,

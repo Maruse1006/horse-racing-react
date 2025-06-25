@@ -35,6 +35,8 @@ import QuinellaBeddingType from "../app/quinellaBeddingType";
 import BettingOptionsScreen from "../app/betting_type_page";
 import WideQuinellaBox from "../app/wideQuinellaBox";
 import WideQuinellaFormation from "../app/wideQuinellaFormation";
+import QuinellaFormation from "../app/quinella_formation_bet";
+import TrifectFormation from "../app/trifectaFormation";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,10 +65,11 @@ function MainStack() {
       <Stack.Screen name="TricastBeddingType" component={TricastBeddingType} />
       <Stack.Screen name="QuinellaSingleAxis" component={QuinellaSingleAxisScreen} />
       <Stack.Screen name="TrifectaBettingType" component={TrifectaBettingType} />
-      <Stack.Screen name="QuinellaFormation" component={QuinellaFormationScreen} />
+      <Stack.Screen name="TrifectFormation" component={TrifectFormation} />
       <Stack.Screen name="ExactaBox" component={ExactaBox} />
       <Stack.Screen name="ExactaFormation" component={ExactaFormationScreen} />
       <Stack.Screen name="QuinellaBeddingType" component={QuinellaBeddingType} />
+      <Stack.Screen name="QuinellaFormation" component={QuinellaFormation} />
       <Stack.Screen name="betting_type_page" component={BettingOptionsScreen} />
     </Stack.Navigator>
   );

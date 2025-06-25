@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "reac
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function QuinellaFormationScreen() {
+export default function QuinellaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
