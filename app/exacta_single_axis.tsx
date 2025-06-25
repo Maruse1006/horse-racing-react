@@ -12,7 +12,7 @@ export default function ExactaSingleAxisScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   // 馬データ取得
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function ExactaSingleAxisScreen() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -115,6 +115,7 @@ export default function ExactaSingleAxisScreen() {
       }
 
       const formattedPayload = {
+        year,
         userId,
         name: "馬単",
         dayCount: formatToTwoDigits(dayCount),

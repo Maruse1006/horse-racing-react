@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput }
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function ExactaFormationScreen() {
+export default function ExactaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
@@ -12,7 +12,7 @@ export default function ExactaFormationScreen() {
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -125,6 +125,7 @@ export default function ExactaFormationScreen() {
       const formattedPayload = {
         userId,
         name: "馬単",
+        year:year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),

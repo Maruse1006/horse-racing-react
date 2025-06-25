@@ -1,33 +1,34 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useNavigation, useRoute} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "exacta_formation" },
-  { id: "2", label: "ボックス",screen: "exacta_box" },
-  { id: "3", label: "軸 1 頭流し",screen: "exacta_single_axis" },
+  { id: "1", label: "フォーメーション", screen: "ExactaFormation" },
+  { id: "2", label: "ボックス", screen: "ExactaBox" },
+  { id: "3", label: "軸 1 頭流し", screen: "ExactaSingleAxisScreen" },
 ];
 
 export default function ExactaBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { year,round, place, race,dayCount } = route.params || {}; 
+  const { year, round, place, race, dayCount } = route.params || {};
   React.useEffect(() => {
-      console.log("Received parameters:", { dayCount, place, race });
-    }, [dayCount, place, race]);
+    console.log("Received parameters:", { dayCount, place, race });
+  }, [year,dayCount, place, race]);
 
-  const handlePress = (screen: string) => {
-        navigation.navigate("MainStack", {
-            screen,
-            params: {
-                round,
-                place,
-                race,
-                year,
-                dayCount,
-            },
-        });
-    };
+  const handlePress = (option) => {
+    console.log(`選択されたオプション: ${option.label}`);
+    console.log(`選択されたオプション: ${option.screen}`);
+    if (option.screen) {
+      navigation.navigate(option.screen, {
+        year,
+        round,
+        place,
+        race,
+        dayCount,
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -39,7 +40,7 @@ export default function ExactaBeddingType() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => handlePress(item.screen)}
+            onPress={() => handlePress(item)}
           >
             <Text style={styles.itemText}>{item.label}</Text>
           </TouchableOpacity>
