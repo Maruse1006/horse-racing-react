@@ -25,12 +25,15 @@ export default function TrifectaBettingType() {
   console.log(`選択されたオプション: ${option.label}`);
   console.log(`選択されたオプション: ${option.screen}`);
   if (option.screen) {
-    navigation.navigate(option.screen, {
-      year,
-      round,
-      place,
-      race,
-      dayCount,
+    navigation.navigate("MainStack", {
+      screen: option.screen,
+      params: {
+        year,
+        round,
+        place,
+        race,
+        dayCount,
+      },
     });
   }
 };

@@ -24,6 +24,7 @@ export default function BettingOptionsScreen() {
 
     // ✅ 必ずここで関数定義
     const handleOptionPress = (screen: string) => {
+    console.log(`選択されたオプション: ${screen}`);
         navigation.navigate("MainStack", {
             screen,
             params: {

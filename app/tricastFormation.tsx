@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "reac
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function TricastBettingType() {
+export default function TricastFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
@@ -13,7 +13,7 @@ export default function TricastBettingType() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -24,7 +24,7 @@ export default function TricastBettingType() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -112,6 +112,7 @@ export default function TricastBettingType() {
       const formattedPayload = {
         userId, 
         name: "三連複",
+        year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),

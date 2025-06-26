@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
-  { id: "1", label: "フォーメーション", screen: "tricastFormation" },
+  { id: "1", label: "フォーメーション", screen: "TricastFormation" },
   { id: "2", label: "ボックス",screen: "tricastCombination" },
   { id: "3", label: "軸 1 頭流し",screen:"trifectaFirstkey" },
   { id: "4", label: "軸 2 頭流し" },
@@ -12,7 +12,7 @@ const options = [
 export default function TricastBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { round, place, race,dayCount } = route.params || {}; 
+  const { year,round, place, race,dayCount } = route.params || {}; 
   React.useEffect(() => {
       console.log("Received parameters:", { dayCount, place, race });
     }, [dayCount, place, race]);
@@ -22,6 +22,7 @@ export default function TricastBeddingType() {
     console.log(`選択されたオプション: ${option.screen}`);
     if (option.screen) {
       navigation.navigate(option.screen, {
+        year,
         round, 
         place, 
         race,
