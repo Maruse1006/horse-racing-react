@@ -39,6 +39,8 @@ import WideQuinellaFormation from "../app/wideQuinellaFormation";
 import QuinellaFormation from "../app/quinella_formation_bet";
 import TrifectFormation from "../app/trifectaFormation";
 import ExactaSingleAxisScreen from "../app/exacta_single_axis";
+import TricastBox from "../app/trifectaCombination";
+import TrifectBox from "../app/trifectaCombination";
 
 
 const Drawer = createDrawerNavigator();
@@ -63,12 +65,13 @@ function MainStack() {
       <Stack.Screen name="TrioSecondKey" component={TrioSecondKeyScreen} />
       <Stack.Screen name="TrioThirdKey" component={TrioThirdKeyScreen} />
       <Stack.Screen name="TrioFirstKey" component={TrioFirstKeyScreen} />
-      <Stack.Screen name="TrioBox" component={TrioBoxScreen} />
+      <Stack.Screen name="TricastBox" component={TricastBox} />
       <Stack.Screen name="TricastBetting" component={TricastBeddingType} />
       <Stack.Screen name="TricastFormation" component={TricastFormation} />
       <Stack.Screen name="QuinellaSingleAxis" component={QuinellaSingleAxisScreen} />
       <Stack.Screen name="TrifectaBettingType" component={TrifectaBettingType} />
       <Stack.Screen name="TrifectFormation" component={TrifectFormation} />
+      <Stack.Screen name="TrifectBox" component={TrifectBox} />
       <Stack.Screen name="ExactaFormation" component={ExactaFormationScreen} />
       <Stack.Screen name="ExactaBox" component={ExactaBox} />
       <Stack.Screen name="ExactaSingleAxisScreen" component={ExactaSingleAxisScreen} />

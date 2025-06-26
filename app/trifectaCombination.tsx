@@ -3,11 +3,11 @@ import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
 
-export default function TrioBoxScreen() {
+export default function TrifectBox() {
     const [horses, setHorses] = useState([]); // 馬データ用のステート
     const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
     const route = useRoute();
-    const { dayCount, place, race, round } = route.params || {};
+    const {year,dayCount, place, race, round } = route.params || {};
     const [payout, setPayout] = useState(0); // 払い戻し金額
     
 
@@ -20,7 +20,7 @@ export default function TrioBoxScreen() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ dayCount, place, race, round }),
+                    body: JSON.stringify({ year,dayCount, place, race, round }),
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -36,9 +36,9 @@ export default function TrioBoxScreen() {
             }
         };
 
-        console.log("Received parameters:", { dayCount, place, race, round });
+        console.log("Received parameters:", { year,dayCount, place, race, round });
         fetchHorses(); // データを取得する関数を呼び出し
-    }, [dayCount, place, race, round]);
+    }, [year,dayCount, place, race, round]);
 
 
     const toggleHorse = (horse: number) => {
@@ -101,6 +101,7 @@ export default function TrioBoxScreen() {
     
           const formattedPayload = {
             userId, 
+            year,
             name: "三連単",
             dayCount: formatToTwoDigits(dayCount),
             place: formatToTwoDigits(place),

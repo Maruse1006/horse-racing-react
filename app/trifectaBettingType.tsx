@@ -4,7 +4,7 @@ import { useNavigation, useRoute} from "@react-navigation/native";
 
 const options = [
   { id: "1", label: "フォーメーション", screen: "TrifectFormation" },
-  { id: "2", label: "ボックス", screen: "TrioBox" },
+  { id: "2", label: "ボックス", screen: "TrifectBox" },
   { id: "3", label: "1着流し", screen: "TrioFirstKey" },
   { id: "4", label: "2着流し", screen: "TrioSecondKey" },
   { id: "5", label: "3着流し", screen: "TrioThirdKey" },
