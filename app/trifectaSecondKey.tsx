@@ -12,7 +12,7 @@ export default function TrioSecondKeyScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -39,7 +39,7 @@ export default function TrioSecondKeyScreen() {
       }
     };
     fetchHorses(); // データを取得する関数を呼び出し
-  }, [dayCount, place, race, round]);
+  }, [year,dayCount, place, race, round]);
 
   const toggleSelection = (rowSetter, row, horse, isSingleSelection = false) => {
     rowSetter((prev) =>
@@ -121,6 +121,7 @@ export default function TrioSecondKeyScreen() {
 
       const formattedPayload = {
         userId, 
+        year,
         name: "三連単",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
@@ -156,7 +157,7 @@ export default function TrioSecondKeyScreen() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>三連単１着流し</Text>
+        <Text style={styles.title}>三連単2着流し</Text>
     
         {/* 1列目 */}
         <View style={styles.row}>

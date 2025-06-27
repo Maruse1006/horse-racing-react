@@ -16,15 +16,14 @@ const bettingOptions = [
 export default function BettingOptionsScreen() {
     const navigation = useNavigation<any>();
     const route = useRoute();
-    const { year,round, place, race, dayCount } = route.params || {};
+    const { year, round, place, race, dayCount } = route.params || {};
 
     useEffect(() => {
-        console.log("Received parameters:", { year,round, place, race, dayCount });
-    }, [year,round, place, race, dayCount]);
+        console.log("Received parameters:", { year, round, place, race, dayCount });
+    }, [year, round, place, race, dayCount]);
 
-    // ✅ 必ずここで関数定義
     const handleOptionPress = (screen: string) => {
-    console.log(`選択されたオプション: ${screen}`);
+        console.log(`選択されたオプション: ${screen}`);
         navigation.navigate("MainStack", {
             screen,
             params: {
@@ -35,6 +34,10 @@ export default function BettingOptionsScreen() {
                 dayCount,
             },
         });
+    };
+
+    const handleGoBack = () => {
+        navigation.goBack();
     };
 
     return (
@@ -53,6 +56,11 @@ export default function BettingOptionsScreen() {
                     </TouchableOpacity>
                 )}
             />
+
+            {/* ✅ 戻るボタン */}
+            <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+                <Text style={styles.backButtonText}>戻る</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -84,5 +92,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "500",
         textAlign: "center",
+    },
+    backButton: {
+        backgroundColor: "#2196F3",
+        padding: 12,
+        marginTop: 16,
+        borderRadius: 8,
+    },
+    backButtonText: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 16,
     },
 });
