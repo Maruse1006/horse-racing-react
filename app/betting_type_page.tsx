@@ -57,7 +57,7 @@ export default function BettingOptionsScreen() {
                 )}
             />
 
-            {/* ✅ 戻るボタン */}
+            {/*  戻るボタン */}
             <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
                 <Text style={styles.backButtonText}>戻る</Text>
             </TouchableOpacity>

@@ -48,6 +48,7 @@ export default function QuinellaBeddingType() {
           >
             <Text style={styles.itemText}>{item.label}</Text>
           </TouchableOpacity>
+          
         )}
       />
     </View>

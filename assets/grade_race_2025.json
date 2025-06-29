@@ -1,0 +1,577 @@
+[
+  {
+    "date": "2025年1月5日(日)",
+    "venue": "中山",
+    "raceName": "日刊スポーツ賞中山金杯",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年1月5日(日)",
+    "venue": "中京",
+    "raceName": "スポーツニッポン賞京都金杯",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年1月12日(日)",
+    "venue": "中山",
+    "raceName": "フェアリーＳ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年1月13日(月)",
+    "venue": "中京",
+    "raceName": "日刊スポーツ賞シンザン記念",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年1月19日(日)",
+    "venue": "中山",
+    "raceName": "京成杯",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年1月19日(日)",
+    "venue": "中京",
+    "raceName": "日経新春杯",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2200m"
+  },
+  {
+    "date": "2025年1月25日(土)",
+    "venue": "小倉",
+    "raceName": "小倉牝馬Ｓ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年1月26日(日)",
+    "venue": "中山",
+    "raceName": "アメリカジョッキーＣＣ",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2200m"
+  },
+  {
+    "date": "2025年1月26日(日)",
+    "venue": "中京",
+    "raceName": "プロキオンＳ",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "ダ1800m"
+  },
+  {
+    "date": "2025年2月2日(日)",
+    "venue": "東京",
+    "raceName": "根岸Ｓ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "ダ1400m"
+  },
+  {
+    "date": "2025年2月2日(日)",
+    "venue": "京都",
+    "raceName": "シルクロードＳ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1200m"
+  },
+  {
+    "date": "2025年2月9日(日)",
+    "venue": "東京",
+    "raceName": "東京新聞杯",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年2月9日(日)",
+    "venue": "京都",
+    "raceName": "きさらぎ賞",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年2月15日(土)",
+    "venue": "東京",
+    "raceName": "デイリー杯クイーンカップ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年2月15日(土)",
+    "venue": "小倉",
+    "raceName": "小倉ジャンプＳ",
+    "grade": "JG3",
+    "ageLimit": "4上",
+    "distance": "障3390m"
+  },
+  {
+    "date": "2025年2月16日(日)",
+    "venue": "東京",
+    "raceName": "共同通信杯",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年2月16日(日)",
+    "venue": "京都",
+    "raceName": "京都記念",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2200m"
+  },
+  {
+    "date": "2025年2月22日(土)",
+    "venue": "東京",
+    "raceName": "ダイヤモンドＳ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝3400m"
+  },
+  {
+    "date": "2025年2月22日(土)",
+    "venue": "京都",
+    "raceName": "阪急杯",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1400m"
+  },
+  {
+    "date": "2025年2月23日(日)",
+    "venue": "東京",
+    "raceName": "フェブラリーＳ",
+    "grade": "G1",
+    "ageLimit": "4上",
+    "distance": "ダ1600m"
+  },
+  {
+    "date": "2025年2月23日(日)",
+    "venue": "小倉",
+    "raceName": "小倉大賞典",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月1日(土)",
+    "venue": "中山",
+    "raceName": "オーシャンＳ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1200m"
+  },
+  {
+    "date": "2025年3月2日(日)",
+    "venue": "中山",
+    "raceName": "中山記念",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月2日(日)",
+    "venue": "阪神",
+    "raceName": "チューリップ賞",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年3月8日(土)",
+    "venue": "中山",
+    "raceName": "ローレル競馬場賞中山牝馬Ｓ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月8日(土)",
+    "venue": "阪神",
+    "raceName": "報知杯フィリーズレビュー",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝1400m"
+  },
+  {
+    "date": "2025年3月9日(日)",
+    "venue": "中山",
+    "raceName": "報知杯弥生賞ディープインパクト記念",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝2000m"
+  }, {
+    "date": "2025年3月15日(土)",
+    "venue": "阪神",
+    "raceName": "阪神スプリングジャンプ",
+    "grade": "JG2",
+    "ageLimit": "4上",
+    "distance": "障3900m"
+  },
+  {
+    "date": "2025年3月16日(日)",
+    "venue": "中山",
+    "raceName": "スプリングＳ",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月16日(日)",
+    "venue": "中京",
+    "raceName": "東海テレビ杯金鯱賞",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年3月22日(土)",
+    "venue": "中山",
+    "raceName": "フラワーカップ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月22日(土)",
+    "venue": "中京",
+    "raceName": "中日スポーツ賞ファルコンＳ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1400m"
+  },
+  {
+    "date": "2025年3月23日(日)",
+    "venue": "中京",
+    "raceName": "愛知杯",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1400m"
+  },
+  {
+    "date": "2025年3月23日(日)",
+    "venue": "阪神",
+    "raceName": "阪神大賞典",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝3000m"
+  },
+  {
+    "date": "2025年3月29日(土)",
+    "venue": "中山",
+    "raceName": "日経賞",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2500m"
+  },
+  {
+    "date": "2025年3月29日(土)",
+    "venue": "阪神",
+    "raceName": "毎日杯",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年3月30日(日)",
+    "venue": "中山",
+    "raceName": "マーチＳ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "ダ1800m"
+  },
+  {
+    "date": "2025年3月30日(日)",
+    "venue": "中京",
+    "raceName": "高松宮記念",
+    "grade": "G1",
+    "ageLimit": "4上",
+    "distance": "芝1200m"
+  },
+  {
+    "date": "2025年4月5日(土)",
+    "venue": "中山",
+    "raceName": "ダービー卿チャレンジＴ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年4月5日(土)",
+    "venue": "阪神",
+    "raceName": "チャーチルダウンズカップ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年4月6日(日)",
+    "venue": "阪神",
+    "raceName": "大阪杯",
+    "grade": "G1",
+    "ageLimit": "4上",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年4月12日(土)",
+    "venue": "中山",
+    "raceName": "ニュージーランドＴ",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年4月12日(土)",
+    "venue": "阪神",
+    "raceName": "サンケイスポーツ杯阪神牝馬Ｓ",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年4月13日(日)",
+    "venue": "阪神",
+    "raceName": "桜花賞",
+    "grade": "G1",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年4月19日(土)",
+    "venue": "中山",
+    "raceName": "中山グランドジャンプ",
+    "grade": "JG1",
+    "ageLimit": "4上",
+    "distance": "障4260m"
+  },
+  {
+    "date": "2025年4月19日(土)",
+    "venue": "阪神",
+    "raceName": "アンタレスＳ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "ダ1800m"
+  },
+  {
+    "date": "2025年4月20日(日)",
+    "venue": "福島",
+    "raceName": "福島牝馬Ｓ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年4月20日(日)",
+    "venue": "中山",
+    "raceName": "皐月賞",
+    "grade": "G1",
+    "ageLimit": "3歳",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年4月26日(土)",
+    "venue": "東京",
+    "raceName": "テレビ東京杯青葉賞",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝2400m"
+  },
+  {
+    "date": "2025年4月27日(日)",
+    "venue": "東京",
+    "raceName": "サンケイスポーツ賞フローラＳ",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年4月27日(日)",
+    "venue": "京都",
+    "raceName": "読売マイラーズカップ",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年5月3日(土)",
+    "venue": "東京",
+    "raceName": "京王杯スプリングカップ",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝1400m"
+  },
+  {
+    "date": "2025年5月3日(土)",
+    "venue": "京都",
+    "raceName": "ユニコーンＳ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "ダ1900m"
+  },
+  {
+    "date": "2025年5月4日(日)",
+    "venue": "京都",
+    "raceName": "天皇賞（春）",
+    "grade": "G1",
+    "ageLimit": "4上",
+    "distance": "芝3200m"
+  },
+   {
+    "date": "2025年5月10日(土)",
+    "venue": "東京",
+    "raceName": "エプソムカップ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年5月10日(土)",
+    "venue": "京都",
+    "raceName": "京都新聞杯",
+    "grade": "G2",
+    "ageLimit": "3歳",
+    "distance": "芝2200m"
+  },
+  {
+    "date": "2025年5月11日(日)",
+    "venue": "東京",
+    "raceName": "ＮＨＫマイルカップ",
+    "grade": "G1",
+    "ageLimit": "3歳",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年5月17日(土)",
+    "venue": "新潟",
+    "raceName": "新潟大賞典",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "芝2000m"
+  },
+  {
+    "date": "2025年5月17日(土)",
+    "venue": "京都",
+    "raceName": "京都ハイジャンプ",
+    "grade": "JG2",
+    "ageLimit": "4上",
+    "distance": "障3930m"
+  },
+  {
+    "date": "2025年5月18日(日)",
+    "venue": "東京",
+    "raceName": "ヴィクトリアマイル",
+    "grade": "G1",
+    "ageLimit": "4上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年5月24日(土)",
+    "venue": "京都",
+    "raceName": "平安Ｓ",
+    "grade": "G3",
+    "ageLimit": "4上",
+    "distance": "ダ1900m"
+  },
+  {
+    "date": "2025年5月25日(日)",
+    "venue": "東京",
+    "raceName": "優駿牝馬",
+    "grade": "G1",
+    "ageLimit": "3歳",
+    "distance": "芝2400m"
+  },
+  {
+    "date": "2025年5月31日(土)",
+    "venue": "京都",
+    "raceName": "葵Ｓ",
+    "grade": "G3",
+    "ageLimit": "3歳",
+    "distance": "芝1200m"
+  },
+  {
+    "date": "2025年6月1日(日)",
+    "venue": "東京",
+    "raceName": "目黒記念",
+    "grade": "G2",
+    "ageLimit": "4上",
+    "distance": "芝2500m"
+  },
+  {
+    "date": "2025年6月1日(日)",
+    "venue": "東京",
+    "raceName": "東京優駿",
+    "grade": "G1",
+    "ageLimit": "3歳",
+    "distance": "芝2400m"
+  },
+  {
+    "date": "2025年6月8日(日)",
+    "venue": "東京",
+    "raceName": "安田記念",
+    "grade": "G1",
+    "ageLimit": "3上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年6月14日(土)",
+    "venue": "函館",
+    "raceName": "函館スプリントＳ",
+    "grade": "G3",
+    "ageLimit": "3上",
+    "distance": "芝1200m"
+  },
+  {
+    "date": "2025年6月14日(土)",
+    "venue": "東京",
+    "raceName": "東京ジャンプＳ",
+    "grade": "JG3",
+    "ageLimit": "3上",
+    "distance": "障3110m"
+  },
+  {
+    "date": "2025年6月15日(日)",
+    "venue": "阪神",
+    "raceName": "宝塚記念",
+    "grade": "G1",
+    "ageLimit": "3上",
+    "distance": "芝2200m"
+  },
+  {
+    "date": "2025年6月22日(日)",
+    "venue": "東京",
+    "raceName": "府中牝馬Ｓ",
+    "grade": "G3",
+    "ageLimit": "3上",
+    "distance": "芝1800m"
+  },
+  {
+    "date": "2025年6月22日(日)",
+    "venue": "阪神",
+    "raceName": "しらさぎＳ",
+    "grade": "G3",
+    "ageLimit": "3上",
+    "distance": "芝1600m"
+  },
+  {
+    "date": "2025年6月29日(日)",
+    "venue": "函館",
+    "raceName": "農林水産省賞典　函館記念",
+    "grade": "G3",
+    "ageLimit": "3上",
+    "distance": "芝2000m"
+  }
+]
