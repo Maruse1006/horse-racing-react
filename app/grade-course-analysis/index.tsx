@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-// JSONファイルをassetsフォルダに保存している前提
+// JSONファイル
 import raceData from "../../assets/grade_race_2025.json";
 
 export default function GradeRaceList() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setData(raceData);
   }, []);
 
+  const handlePress = (item: any) => {
+    navigation.navigate("GradeRaceDetail", { race: item });
+  };
+
   const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.card}>
-      <Text style={styles.title}>{item.raceName}</Text>
-      <Text>{item.date} | {item.venue} | {item.grade} | {item.distance}</Text>
-    </View>
+    <TouchableOpacity onPress={() => handlePress(item)}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{item.raceName}</Text>
+        <Text>{item.date} | {item.venue} | {item.grade} | {item.distance}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (

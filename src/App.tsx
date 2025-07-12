@@ -42,6 +42,7 @@ import ExactaSingleAxisScreen from "../app/exacta_single_axis";
 import TricastBox from "../app/trifectaCombination";
 import TrifectBox from "../app/trifectaCombination";
 import GradeCourseAnalysis from "../app/grade-course-analysis";
+import GradeRaceDetail from "../app/grade-course-analysis/detail";
 
 
 const Drawer = createDrawerNavigator();
@@ -57,6 +58,7 @@ function MainStack() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="RaceSelection" component={RaceSelectionScreen} />
       <Stack.Screen name="GradeCourseAnalysis" component={GradeCourseAnalysis} />
+      <Stack.Screen name="GradeRaceDetail" component={GradeRaceDetail} />
       <Stack.Screen name="WinBet" component={WinBet} />
       <Stack.Screen name="PlaceBet" component={PlaceBet} />
       <Stack.Screen name="TrifectaBeddingType" component={TrifectaBeddingType} />

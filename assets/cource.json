@@ -1,0 +1,10 @@
+{
+  "fukushima_shiba_2000": {
+    "courseDescription": "小回り右回りで直線が短く、先行馬が有利。",
+    "courseImage": "fukushima_shiba_2000.png"
+  },
+  "hakodate_shiba_1200": {
+    "courseDescription": "平坦な洋芝で、逃げ・先行が有利。",
+    "courseImage": "hakodate_shiba_1200.png"
+  }
+}
