@@ -59,7 +59,7 @@ export default function Dashboard() {
             const actualDate = findActualDate(
               calendarData,
               entry.date_info,
-              entry.location, // location = placeId そのまま使う
+              entry.location, 
               entry.round
             );
 
