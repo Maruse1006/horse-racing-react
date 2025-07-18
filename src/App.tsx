@@ -43,6 +43,8 @@ import TricastBox from "../app/trifectaCombination";
 import TrifectBox from "../app/trifectaCombination";
 import GradeCourseAnalysis from "../app/grade-course-analysis";
 import GradeRaceDetail from "../app/grade-course-analysis/detail";
+import QuinellaBox from "../app/quinella_box";
+import QuinellaSingleAxis from "../app/quinella_single_axis";
 
 
 const Drawer = createDrawerNavigator();
@@ -81,6 +83,8 @@ function MainStack() {
       <Stack.Screen name="ExactaSingleAxisScreen" component={ExactaSingleAxisScreen} />
       <Stack.Screen name="QuinellaBeddingType" component={QuinellaBeddingType} />
       <Stack.Screen name="QuinellaFormation" component={QuinellaFormation} />
+      <Stack.Screen name="QuinellaBox" component={QuinellaBox} />
+      <Stack.Screen name="QuinellaSingleAxis" component={QuinellaSingleAxis} />
       <Stack.Screen name="betting_type_page" component={BettingOptionsScreen} />
     </Stack.Navigator>
   );

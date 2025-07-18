@@ -3,7 +3,7 @@ import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 
-export default function TrioBoxScreen() {
+export default function QuinellaBox() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();

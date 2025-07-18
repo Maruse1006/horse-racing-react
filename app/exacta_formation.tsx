@@ -23,7 +23,7 @@ export default function ExactaFormation() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {

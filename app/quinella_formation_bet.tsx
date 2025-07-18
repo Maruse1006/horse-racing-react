@@ -12,7 +12,7 @@ export default function QuinellaFormation() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -23,7 +23,7 @@ export default function QuinellaFormation() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -39,9 +39,9 @@ export default function QuinellaFormation() {
       }
     };
 
-    console.log("Received parameters:", { dayCount, place, race, round });
+    console.log("Received parameters:", { year,dayCount, place, race, round });
     fetchHorses(); // データを取得する関数を呼び出し
-  }, [dayCount, place, race, round]);
+  }, [year,dayCount, place, race, round]);
 
   const toggleSelection = (rowSetter, row, horse) => {
     rowSetter((prev) =>
@@ -108,6 +108,7 @@ export default function QuinellaFormation() {
 
       const formattedPayload = {
         userId, 
+        year:year,
         name: "馬連",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),

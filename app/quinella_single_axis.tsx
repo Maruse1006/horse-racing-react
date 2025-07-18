@@ -4,7 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput }
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function QuinellaSingleAxisScreen() {
+export default function QuinellaSingleAxis() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]); // 1列目の選択状態
   const [secondRow, setSecondRow] = useState([]); // 2列目の選択状態

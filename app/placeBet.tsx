@@ -105,6 +105,7 @@ export default function PlaceBet() {
             const formattedPayload = {
                 userId,
                 name: "複勝",
+                year:year,
                 dayCount: formatToTwoDigits(dayCount),
                 place: formatToTwoDigits(place),
                 race: formatToTwoDigits(race),
