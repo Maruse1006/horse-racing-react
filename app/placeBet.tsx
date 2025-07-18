@@ -3,6 +3,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+// Base64デコード用にBufferを使用
+import { Buffer } from "buffer";
 
 export default function PlaceBet() {
     const [horses, setHorses] = useState([]); // 馬データ用のステート
@@ -70,13 +72,15 @@ export default function PlaceBet() {
     };
 
     const getUserIdFromToken = (token) => {
-        if (!token) return null;
         try {
-            const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-            const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-            return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
-        } catch (error) {
-            console.error('Invalid token:', error);
+            const payload = token.split(".")[1];
+            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+            const decoded = JSON.parse(decodedJson);
+            console.log("JWT Payload:", decoded); // デバッグ用
+            const userId = parseInt(decoded.sub, 10);
+            return userId; 
+        } catch (e) {
+            console.error("JWTデコードエラー", e);
             return null;
         }
 

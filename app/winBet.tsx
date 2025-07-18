@@ -10,7 +10,11 @@ import {
     StyleSheet,
     TextInput,
     ScrollView,
+    Alert,
 } from "react-native";
+
+// Base64デコード用にBufferを使用
+import { Buffer } from "buffer";
 
 export default function WinBet() {
     const [horses, setHorses] = useState([]);
@@ -36,11 +40,11 @@ export default function WinBet() {
                     );
                     setHorses(sortedHorses);
                 } else {
-                    alert("馬データの取得に失敗しました。");
+                    Alert.alert("エラー", "馬データの取得に失敗しました。");
                 }
             } catch (error) {
                 console.error("通信エラー:", error);
-                alert("通信に失敗しました。");
+                Alert.alert("エラー", "通信に失敗しました。");
             }
         };
 
@@ -62,9 +66,13 @@ export default function WinBet() {
     const getUserIdFromToken = (token: string) => {
         try {
             const payload = token.split(".")[1];
-            const decoded = JSON.parse(atob(payload));
-            return decoded.sub?.id;
-        } catch {
+            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+            const decoded = JSON.parse(decodedJson);
+            console.log("JWT Payload:", decoded); // デバッグ用
+            const userId = parseInt(decoded.sub, 10);
+            return userId; 
+        } catch (e) {
+            console.error("JWTデコードエラー", e);
             return null;
         }
     };
@@ -74,13 +82,20 @@ export default function WinBet() {
 
     const checkPayout = async () => {
         const token = await AsyncStorage.getItem("token");
-        if (!token) return alert("ログインしてください。");
+        console.log("JWT Token:", token); // デバッグ用
 
         const userId = getUserIdFromToken(token);
-        if (!userId) return alert("ユーザー認証エラー");
+        console.log("userId:", userId); // デバッグ用
+
+        if (!userId) {
+            Alert.alert("エラー", "ユーザー認証エラー。ログインし直してください。");
+            await AsyncStorage.removeItem("token");
+            navigation.navigate("Login");
+            return;
+        }
 
         const payload = {
-            userId,
+            userId: userId,
             name: "単勝",
             dayCount: formatToTwoDigits(dayCount),
             place: formatToTwoDigits(place),
@@ -90,18 +105,27 @@ export default function WinBet() {
             amounts: combinations.map((c) => Number(betAmounts[c] || 0)),
         };
 
-        const res = await fetch("http://127.0.0.1:5000/api/check_payout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
+        console.log("送信Payload:", payload); // デバッグ用
 
-        const data = await res.json();
-        if (data.success) {
-            setPayout(data.payout);
-        } else {
-            setPayout(0);
-            alert("払い戻しはありません。");
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/check_payout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+            console.log("APIレスポンス:", data); // デバッグ用
+
+            if (data.success) {
+                setPayout(data.payout);
+            } else {
+                setPayout(0);
+                Alert.alert("結果", "払い戻しはありません。");
+            }
+        } catch (error) {
+            console.error("API通信エラー:", error);
+            Alert.alert("エラー", "サーバーとの通信に失敗しました。");
         }
     };
 
