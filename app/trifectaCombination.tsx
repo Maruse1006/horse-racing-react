@@ -60,7 +60,9 @@ export default function TrifectBox() {
       }
     }
     return combinations;
+    
   };
+  
 
   const formatToTwoDigits = (value) => {
     if (typeof value === "string" && !isNaN(value)) {
