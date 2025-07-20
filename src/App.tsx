@@ -74,7 +74,6 @@ function MainStack() {
       <Stack.Screen name="TricastBox" component={TricastBox} />
       <Stack.Screen name="TricastBetting" component={TricastBeddingType} />
       <Stack.Screen name="TricastFormation" component={TricastFormation} />
-      <Stack.Screen name="QuinellaSingleAxis" component={QuinellaSingleAxisScreen} />
       <Stack.Screen name="TrifectaBettingType" component={TrifectaBettingType} />
       <Stack.Screen name="TrifectFormation" component={TrifectFormation} />
       <Stack.Screen name="TrifectBox" component={TrifectBox} />

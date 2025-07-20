@@ -70,7 +70,7 @@ export default function WinBet() {
             const decoded = JSON.parse(decodedJson);
             console.log("JWT Payload:", decoded); // デバッグ用
             const userId = parseInt(decoded.sub, 10);
-            return userId; 
+            return userId;
         } catch (e) {
             console.error("JWTデコードエラー", e);
             return null;
@@ -95,15 +95,18 @@ export default function WinBet() {
         }
 
         const payload = {
-            userId: userId,
-            name: "単勝",
-            dayCount: formatToTwoDigits(dayCount),
-            place: formatToTwoDigits(place),
-            race: formatToTwoDigits(race),
-            round: formatToTwoDigits(round),
-            combinations: combinations.map((c) => formatToTwoDigits(c)),
-            amounts: combinations.map((c) => Number(betAmounts[c] || 0)),
-        };
+    userId: userId,
+    year: year,
+    name: "単勝", // 単勝指定
+    dayCount: formatToTwoDigits(dayCount),
+    place: formatToTwoDigits(place),
+    race: formatToTwoDigits(race),
+    round: formatToTwoDigits(round),
+    combinations: combinations.map((num) => formatToTwoDigits(num)), // 馬番だけ
+    amounts: combinations.map((num) => Number(betAmounts[num] || 0)) // 金額
+};
+
+
 
         console.log("送信Payload:", payload); // デバッグ用
 

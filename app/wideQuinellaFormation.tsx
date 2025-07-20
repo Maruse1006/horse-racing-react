@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Buffer } from "buffer";
+
 
 export default function WideQuinellaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
@@ -81,17 +83,19 @@ export default function WideQuinellaFormation() {
     return value;
   };
 
-  const getUserIdFromToken = (token) => {
-    if (!token) return null;
-    try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
-    } catch (error) {
-      console.error('Invalid token:', error);
-      return null;
-    }
-  };
+    const getUserIdFromToken = (token: string) => {
+        try {
+            const payload = token.split(".")[1];
+            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+            const decoded = JSON.parse(decodedJson);
+            console.log("JWT Payload:", decoded); // デバッグ用
+            const userId = parseInt(decoded.sub, 10);
+            return userId; 
+        } catch (e) {
+            console.error("JWTデコードエラー", e);
+            return null;
+        }
+    };
 
   const checkPayout = async () => {
     try {
@@ -126,6 +130,7 @@ export default function WideQuinellaFormation() {
       const formattedPayload = {
         userId,
         name: "ワイド",
+        year:year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),

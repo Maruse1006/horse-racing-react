@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -10,10 +10,11 @@ export default function TricastFormation() {
   const [secondRow, setSecondRow] = useState([]);
   const [thirdRow, setThirdRow] = useState([]);
   const [payout, setPayout] = useState(0); // 払い戻し金額
-
+  const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
+  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
   const navigation = useNavigation();
   const route = useRoute();
-  const { year,dayCount, place, race, round } = route.params || {};
+  const { year, dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -24,7 +25,7 @@ export default function TricastFormation() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ year,dayCount, place, race, round }),
+          body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -58,8 +59,9 @@ export default function TricastFormation() {
     rowSetter([]);
   };
 
-  const calculateCombinations = () => {
+  const calculateCombinations = (selectedHorses: number[]) => {
     const combinations = [];
+    console.log(combinations);
     for (let a of firstRow) {
       for (let b of secondRow) {
         for (let c of thirdRow) {
@@ -110,7 +112,7 @@ export default function TricastFormation() {
       }
 
       const formattedPayload = {
-        userId, 
+        userId,
         name: "三連複",
         year,
         dayCount: formatToTwoDigits(dayCount),
@@ -143,106 +145,135 @@ export default function TricastFormation() {
       alert("バックエンドへのリクエストに失敗しました。");
     }
   };
+  const handleBetAmountChange = (combinationKey: string, value: string) => {
+    setBetAmounts((prev) => ({
+      ...prev,
+      [combinationKey]: value,
+    }));
+  };
+  const combinations = calculateCombinations(selectedHorses);
 
   return (
-<ScrollView>
-  <View style={styles.container}>
-    <Text style={styles.title}>三連複フォーメーション</Text>
-    <Text>
-      選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-    </Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>三連複フォーメーション</Text>
+        <Text>
+          選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
+        </Text>
 
-    {/* 1列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>1頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              firstRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+        {/* 1列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>1頭目</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  firstRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setFirstRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setFirstRow)} />
+          </View>
+        </View>
+
+        {/* 2列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>2頭目</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  secondRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
+          </View>
+        </View>
+
+        {/* 3列目 */}
+        <View style={styles.row}>
+          <Text style={styles.label}>3頭目</Text>
+          <FlatList
+            data={horses}
+            numColumns={4}
+            keyExtractor={(item) => item.number.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.horseItem,
+                  thirdRow.includes(item.number) && styles.selectedHorse,
+                ]}
+                onPress={() => toggleSelection(setThirdRow, thirdRow, item.number)}
+              >
+                <Text style={styles.horseText}>
+                  {item.number}. {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          <View style={styles.buttonRow}>
+            <Button title="全通り" onPress={() => selectAll(setThirdRow)} />
+            <Button title="クリア" onPress={() => clearSelection(setThirdRow)} />
+          </View>
+        </View>
+
+        {/* 結果表示 */}
+        <Text style={styles.result}>
+          総組み合わせ数: {calculateCombinations().length}
+        </Text>
+        <FlatList
+          data={combinations}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => {
+            const combinationKey = item.join(",");
+            return (
+              <View style={styles.rowCol}>
+                <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+                <TextInput
+                  style={[styles.column, styles.input]}
+                  keyboardType="numeric"
+                  placeholder="賭け額"
+                  value={betAmounts[combinationKey] || ""}
+                  onChangeText={(value) =>
+                    handleBetAmountChange(combinationKey, value)
+                  }
+                />
+              </View>
+            );
+          }}
+        />
+
+        <Button title="払い戻し金額を確認" onPress={checkPayout} />
+        <Text style={styles.result}>
+          払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
+        </Text>
       </View>
-    </View>
-
-    {/* 2列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>2頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              secondRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setSecondRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setSecondRow)} />
-      </View>
-    </View>
-
-    {/* 3列目 */}
-    <View style={styles.row}>
-      <Text style={styles.label}>3頭目</Text>
-      <FlatList
-        data={horses}
-        numColumns={4}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.horseItem,
-              thirdRow.includes(item.number) && styles.selectedHorse,
-            ]}
-            onPress={() => toggleSelection(setThirdRow, thirdRow, item.number)}
-          >
-            <Text style={styles.horseText}>
-              {item.number}. {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.buttonRow}>
-        <Button title="全通り" onPress={() => selectAll(setThirdRow)} />
-        <Button title="クリア" onPress={() => clearSelection(setThirdRow)} />
-      </View>
-    </View>
-
-    {/* 結果表示 */}
-    <Text style={styles.result}>
-      総組み合わせ数: {calculateCombinations().length}
-    </Text>
-    <Button title="払い戻し金額を確認" onPress={checkPayout} />
-    <Text style={styles.result}>
-      払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
-    </Text>
-  </View>
-</ScrollView>
+    </ScrollView>
   );
 }
 
@@ -259,6 +290,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   row: {
+    marginBottom: 16,
+  },
+  column: {
+
+  },
+  rowCol: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+
     marginBottom: 16,
   },
   label: {
