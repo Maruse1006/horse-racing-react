@@ -2,6 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
+import { Buffer } from "buffer";
+
 
 export default function TrifectBox() {
   const [horses, setHorses] = useState([]); // 馬データ用
@@ -11,6 +13,7 @@ export default function TrifectBox() {
   const { year, dayCount, place, race, round } = route.params || {};
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
 
+  
   useEffect(() => {
     const fetchHorses = async () => {
       try {
@@ -98,17 +101,19 @@ export default function TrifectBox() {
     return value;
   };
 
-  const getUserIdFromToken = (token) => {
-    if (!token) return null;
-    try {
-      const payload = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payload));
-      return decodedPayload.sub?.id;
-    } catch (error) {
-      console.error("Invalid token:", error);
-      return null;
-    }
-  };
+    const getUserIdFromToken = (token: string) => {
+        try {
+            const payload = token.split(".")[1];
+            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+            const decoded = JSON.parse(decodedJson);
+            console.log("JWT Payload:", decoded); // デバッグ用
+            const userId = parseInt(decoded.sub, 10);
+            return userId;
+        } catch (e) {
+            console.error("JWTデコードエラー", e);
+            return null;
+        }
+    };
 
   const checkPayout = async () => {
     try {
@@ -132,6 +137,9 @@ export default function TrifectBox() {
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
         combinations: generateTrifectaBox(selectedHorses),
+        amounts: generateTrifectaBox(selectedHorses).map(
+          (combo) => Number(betAmounts[combo.join(",")] || 0)
+        ), 
       };
 
       console.log("Payload being sent:", formattedPayload);

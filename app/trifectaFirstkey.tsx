@@ -1,35 +1,30 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput, ScrollView } from "react-native";
 
 export default function TrioFirstKeyScreen() {
-  const [horses, setHorses] = useState([]); // 馬データ用のステート
+  const [horses, setHorses] = useState([]); // 馬データ用
   const [firstRow, setFirstRow] = useState([]); // 1着候補
   const [secondRow, setSecondRow] = useState([]); // 2・3着候補
   const [payout, setPayout] = useState(0); // 払い戻し金額
-
+  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({}); // 賭け額
   const navigation = useNavigation();
   const route = useRoute();
-  const { year,dayCount, place, race, round } = route.params || {};
+  const { year, dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
-    // 馬データをバックエンドから取得
     const fetchHorses = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ year,dayCount, place, race, round }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
-          // 馬データを番号順にソートして保存
           const sortedHorses = data.horses.sort((a, b) => parseInt(a.number) - parseInt(b.number));
-          setHorses(sortedHorses); // ソート済みの馬データを保存
+          setHorses(sortedHorses);
         } else {
           alert("馬データの取得に失敗しました。");
         }
@@ -38,21 +33,21 @@ export default function TrioFirstKeyScreen() {
         alert("バックエンドへのリクエストに失敗しました。");
       }
     };
-    fetchHorses(); // データを取得する関数を呼び出し
-  }, [year,dayCount, place, race, round]);
+    fetchHorses();
+  }, [year, dayCount, place, race, round]);
 
   const toggleSelection = (rowSetter, row, horse, isSingleSelection = false) => {
     rowSetter((prev) =>
       prev.includes(horse)
-        ? prev.filter((h) => h !== horse) // 解除
+        ? prev.filter((h) => h !== horse)
         : isSingleSelection
-        ? [horse] // 1頭だけ選択
-        : [...prev, horse] // 複数選択
+          ? [horse]
+          : [...prev, horse]
     );
   };
 
   const selectAll = (rowSetter) => {
-    rowSetter(horses.map((horse) => horse.number)); // 馬番号で全選択
+    rowSetter(horses.map((horse) => horse.number));
   };
 
   const clearSelection = (rowSetter) => {
@@ -66,41 +61,39 @@ export default function TrioFirstKeyScreen() {
         for (let j = i + 1; j < secondRow.length; j++) {
           const b = secondRow[i];
           const c = secondRow[j];
-          console.log("b:"+b,"c:"+c)
-          console.log("i:"+i,"j:"+j)
-          console.log("組み合わせ:"+a,b,c)
-          // console.log(i,j)
           if (a !== b && a !== c) {
-            // b, c と c, b の両方を考慮
             combinations.push([a, b, c]);
-            combinations.push([a, c, b]);
+            combinations.push([a, c, b]); // 2-3着を入れ替えたパターンも追加
           }
         }
       }
     }
     return combinations;
   };
-  
+
   const formatToTwoDigits = (value) => {
-    if (typeof value === "string" && !isNaN(value)) {
-      return value.padStart(2, "0");
-    }
-    if (typeof value === "number") {
-      return value.toString().padStart(2, "0");
-    }
+    if (typeof value === "string" && !isNaN(value)) return value.padStart(2, "0");
+    if (typeof value === "number") return value.toString().padStart(2, "0");
     return value;
   };
 
   const getUserIdFromToken = (token) => {
     if (!token) return null;
     try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
+      const payload = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payload));
+      return decodedPayload.sub?.id;
     } catch (error) {
       console.error('Invalid token:', error);
       return null;
     }
+  };
+
+  const handleBetAmountChange = (combinationKey: string, value: string) => {
+    setBetAmounts((prev) => ({
+      ...prev,
+      [combinationKey]: value,
+    }));
   };
 
   const checkPayout = async () => {
@@ -117,25 +110,27 @@ export default function TrioFirstKeyScreen() {
         return;
       }
 
+      const combinations = calculateCombinations();
 
       const formattedPayload = {
-        userId, 
+        userId,
         year,
         name: "三連単",
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: calculateCombinations(),
+        combinations: combinations,
+        amounts: combinations.map(
+          (combo) => Number(betAmounts[combo.join(",")] || 0)
+        ), // 金額を配列で送信
       };
 
       console.log("Payload being sent:", formattedPayload);
 
       const response = await fetch("http://127.0.0.1:5000/api/check_payout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedPayload),
       });
 
@@ -153,12 +148,14 @@ export default function TrioFirstKeyScreen() {
     }
   };
 
+  const combinations = calculateCombinations();
+
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>三連単１着流し</Text>
-    
-        {/* 1列目 */}
+        <Text style={styles.title}>三連単1着流し</Text>
+
+        {/* 1着候補 */}
         <View style={styles.row}>
           <Text style={styles.label}>1着</Text>
           <FlatList
@@ -173,9 +170,7 @@ export default function TrioFirstKeyScreen() {
                 ]}
                 onPress={() => toggleSelection(setFirstRow, firstRow, item.number, true)}
               >
-                <Text style={styles.horseText}>
-                  {item.number}. {item.name}
-                </Text>
+                <Text style={styles.horseText}>{item.number}. {item.name}</Text>
               </TouchableOpacity>
             )}
           />
@@ -184,7 +179,7 @@ export default function TrioFirstKeyScreen() {
           </View>
         </View>
 
-        {/* 2列目 */}
+        {/* 2・3着候補 */}
         <View style={styles.row}>
           <Text style={styles.label}>2・3着</Text>
           <FlatList
@@ -199,9 +194,7 @@ export default function TrioFirstKeyScreen() {
                 ]}
                 onPress={() => toggleSelection(setSecondRow, secondRow, item.number)}
               >
-                <Text style={styles.horseText}>
-                  {item.number}. {item.name}
-                </Text>
+                <Text style={styles.horseText}>{item.number}. {item.name}</Text>
               </TouchableOpacity>
             )}
           />
@@ -211,9 +204,28 @@ export default function TrioFirstKeyScreen() {
           </View>
         </View>
 
-        <Text style={styles.result}>
-          総組み合わせ数: {calculateCombinations().length}
-        </Text>
+        {/* 組み合わせ一覧と賭け額入力 */}
+        <Text style={styles.result}>総組み合わせ数: {combinations.length}</Text>
+        <FlatList
+          data={combinations}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => {
+            const combinationKey = item.join(",");
+            return (
+              <View style={styles.rowCol}>
+                <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  placeholder="賭け額"
+                  value={betAmounts[combinationKey] || ""}
+                  onChangeText={(value) => handleBetAmountChange(combinationKey, value)}
+                />
+              </View>
+            );
+          }}
+        />
+
         <Button title="払い戻し金額を確認" onPress={checkPayout} />
         <Text style={styles.result}>
           払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
@@ -224,24 +236,10 @@ export default function TrioFirstKeyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  row: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 8,
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, textAlign: "center" },
+  row: { marginBottom: 16 },
+  label: { fontSize: 18, marginBottom: 8 },
   horseItem: {
     flex: 1,
     margin: 4,
@@ -250,21 +248,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 4,
   },
-  selectedHorse: {
-    backgroundColor: "#00adf5",
-  },
-  horseText: {
-    fontSize: 16,
-  },
-  buttonRow: {
+  selectedHorse: { backgroundColor: "#00adf5" },
+  horseText: { fontSize: 16 },
+  buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 8 },
+  rowCol: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginVertical: 4,
   },
-  result: {
-    fontSize: 18,
-    fontWeight: "bold",
+  column: { fontSize: 16, flex: 1 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 4,
+    borderRadius: 4,
+    width: 80,
     textAlign: "center",
-    marginTop: 16,
   },
+  result: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginTop: 16 },
 });
