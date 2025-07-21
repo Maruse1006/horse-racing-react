@@ -1,129 +1,21 @@
-# Welcome to your Expo app 👋
+#　３連系の組み合わせ計算 👋
 
-ナミュールのデータを例にして、generation_1（例えば「ハービンジャー」）が8行続くケース
+
 ```
-spanMap = {};
-count = 0;
-
-// ループ開始
-i = 0;  // 最初の行
-count = 1;  // 初回なのでカウントを1に設定
-
-// iが進むごとに値が同じであれば
-i = 1; count = 2;
-i = 2; count = 3;
-// ...
-
-// 最後の行 or 異なる値に到達した時
-i = 8;  // 現在の行が異なる値
-if (count > 0) {
-    spanMap[0] = 8;  // 最初の行に行数（8行）を割り当て
+for (let i = 0; i < horseNumbers.length; i++) {
+  for (let j = i + 1; j < horseNumbers.length; j++) {
+    for (let k = j + 1; k < horseNumbers.length; k++) {
+      combinations.push([horseNumbers[i], horseNumbers[j], horseNumbers[k]]);
+    }
+  }
 }
+
 ```
 
-spanMapの内容は以下のようになります。
-```
-spanMap = {
-    0: 8,  // 0行目から始まるグループは8行連続
-};
-```
+### 1. for (let i = 0; i < horseNumbers.length; i++)
+馬のリスト (horseNumbers) から1頭目を選ぶループ
 
-別のケース（異なる値が途中で出現する）
+i は 1頭目のインデックス
 
-例えば、次のようなgeneration_1のデータを考えます。
-```
-ハービンジャー
-ハービンジャー
-ハービンジャー
-サンデーサイレンス
-サンデーサイレンス
-```
-この場合、spanMapの計算は以下のように進みます。
-```
-i = 0; count = 1
-i = 1; count = 2
-i = 2; count = 3
-i = 3; 異なる値が出現:
-spanMap[0] = 3 を追加（0行目の値が3行続く）
-count = 1 にリセット
-i = 4; count = 2
-最後まで進んだら
-spanMap[3] = 2 を追加（3行目の値が2行続く）
-```
-spanMap = {
-    0: 3,  // ハービンジャーが3行続く
-    3: 2,  // サンデーサイレンスが2行続く
-};
 
-# rowSpanについて
-```
-[
-  {"generation_1": "シニスターミニスター"},
-  {"generation_1": "シニスターミニスター"},
-  {"generation_1": "シニスターミニスター"},
-  {"generation_1": "マキシムカフェ"},
-  {"generation_1": "マキシムカフェ"},
-  {"generation_1": "マキシムカフェ"}
-]
-```
 
-ループ処理
-1回目 (i = 0)
-
-data[0]["generation_1"] = "シニスターミニスター"
-条件: i === 0 → 新しい値として処理開始。
-操作:
-count = 1（連続行数を1に設定）。
-spanMapはまだ記録しない。
-
-2回目 (i = 1)
-
-data[1]["generation_1"] = "シニスターミニスター"
-
-条件: 現在の値と前の値が同じ → 値の連続が続いている。
-
-操作:
-count++ → count = 2
-
-3回目 (i = 2)
-
-data[2]["generation_1"] = "シニスターミニスター"
-
-条件: 現在の値と前の値が同じ → 値の連続が続いている。
-
-操作:
-count++ → count = 3
-
-4回目 (i = 3)
-
-data[3]["generation_1"] = "マキシムカフェ"
-
-条件: 現在の値と前の値が異なる。
-
-操作:
-spanMap[0] = 3（行0から3行分結合）。
-
-count = 1（新しい値の連続行数をリセット）。
-
-5回目 (i = 4)
-
-data[4]["generation_1"] = "マキシムカフェ"
-
-条件: 現在の値と前の値が同じ → 値の連続が続いている。
-
-操作:
-count++ → count = 2
-
-6回目 (i = 5)
-
-data[5]["generation_1"] = "マキシムカフェ"
-
-条件: 現在の値と前の値が同じ → 値の連続が続いている。
-
-操作:
-count++ → count = 3
-
-ループ終了後の処理
-最後の値の連続数を記録。
-操作:
-spanMap[3] = 3（行3から3行分結合）。
