@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 
 export default function TrifectBox() {
   const [horses, setHorses] = useState([]); // 馬データ用
@@ -9,6 +9,7 @@ export default function TrifectBox() {
   const route = useRoute();
   const [payout, setPayout] = useState(0); // 払い戻し
   const { year, dayCount, place, race, round } = route.params || {};
+  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchHorses = async () => {
@@ -39,7 +40,7 @@ export default function TrifectBox() {
     );
   };
 
- 
+
   const generateTrifectaBox = (horseNumbers: number[]) => {
     const results: number[][] = [];
 
@@ -154,7 +155,12 @@ export default function TrifectBox() {
       alert("バックエンドへのリクエストに失敗しました。");
     }
   };
-
+  const handleBetAmountChange = (combinationKey: string, value: string) => {
+    setBetAmounts((prev) => ({
+      ...prev,
+      [combinationKey]: value,
+    }));
+  };
   const combinations = generateTrifectaBox(selectedHorses);
 
   return (
@@ -182,9 +188,23 @@ export default function TrifectBox() {
       <FlatList
         data={combinations}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Text style={styles.combination}>{item.join(" → ")}</Text>
-        )}
+        renderItem={({ item }) => {
+          const combinationKey = item.join(",");
+          return (
+            <View style={styles.rowCol}>
+              <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+              <TextInput
+                style={[styles.column, styles.input]}
+                keyboardType="numeric"
+                placeholder="賭け額"
+                value={betAmounts[combinationKey] || ""}
+                onChangeText={(value) =>
+                  handleBetAmountChange(combinationKey, value)
+                }
+              />
+            </View>
+          );
+        }}
       />
 
       <Button title="払い戻し金額を確認" onPress={checkPayout} />
@@ -206,9 +226,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 4,
   },
-  selectedHorse: { backgroundColor: "#00adf5" },
-  horseText: { fontSize: 16 },
-  resultTitle: { fontSize: 18, fontWeight: "bold", marginTop: 16 },
-  combination: { fontSize: 16, marginVertical: 2 },
-  result: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginTop: 16 },
+  rowCol: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 4,
+  },
+  column: {
+    fontSize: 16,
+    flex: 2, // 買い目の幅
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 4,
+    borderRadius: 4,
+    width: 100, // 入力欄の幅
+    textAlign: "center",
+  },
+  selectedHorse: {
+    backgroundColor: "#00adf5"
+  },
+  horseText: {
+    fontSize: 16
+
+  },
+  resultTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 16
+  },
+  combination: {
+    fontSize: 16,
+    marginVertical: 2
+  },
+  result: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 16
+  },
 });
