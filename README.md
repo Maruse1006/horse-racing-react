@@ -1,6 +1,6 @@
-#　３連系の組み合わせ計算 👋
+##　３連系の組み合わせ計算 👋
 
-
+### 三連複ボックス
 ```
 for (let i = 0; i < horseNumbers.length; i++) {
   for (let j = i + 1; j < horseNumbers.length; j++) {
@@ -36,3 +36,44 @@ i + 1 から始めるので
 | 0 | 2 | 3 | \[1,3,4] |
 | 1 | 2 | 3 | \[2,3,4] |
 
+### 三連複ボックス
+```
+  const generateTrifectaBox = (horseNumbers: number[]) => {
+    const results: number[][] = [];
+
+    // 組合せ生成
+    const getCombinations = (arr: number[], k: number): number[][] => {
+      const res: number[][] = [];
+      const helper = (start: number, combo: number[]) => {
+        if (combo.length === k) {
+          res.push([...combo]);
+          return;
+        }
+        for (let i = start; i < arr.length; i++) {
+          helper(i + 1, [...combo, arr[i]]);
+        }
+      };
+      helper(0, []);
+      return res;
+    };
+
+    // 順列生成
+    const getPermutations = (arr: number[]): number[][] => {
+      const res: number[][] = [];
+      const permute = (temp: number[], remaining: number[]) => {
+        if (remaining.length === 0) {
+          res.push(temp);
+          return;
+        }
+        for (let i = 0; i < remaining.length; i++) {
+          const next = remaining.slice();
+          const current = next.splice(i, 1);
+          permute(temp.concat(current), next);
+        }
+      };
+      permute([], arr);
+      return res;
+    };
+
+
+```
