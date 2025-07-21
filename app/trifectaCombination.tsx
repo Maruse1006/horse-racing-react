@@ -4,30 +4,24 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
 
 export default function TrifectBox() {
-  const [horses, setHorses] = useState([]); // 馬データ用のステート
+  const [horses, setHorses] = useState([]); // 馬データ用
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();
-  const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
+  const [payout, setPayout] = useState(0); // 払い戻し
   const { year, dayCount, place, race, round } = route.params || {};
-  const [payout, setPayout] = useState(0); // 払い戻し金額
-
 
   useEffect(() => {
-    // 馬データをバックエンドから取得
     const fetchHorses = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
-          // 馬データを番号順にソートして保存
           const sortedHorses = data.horses.sort((a, b) => parseInt(a.number) - parseInt(b.number));
-          setHorses(sortedHorses); // ソート済みの馬データを保存
+          setHorses(sortedHorses);
         } else {
           alert("馬データの取得に失敗しました。");
         }
@@ -36,33 +30,62 @@ export default function TrifectBox() {
         alert("バックエンドへのリクエストに失敗しました。");
       }
     };
-
-    console.log("Received parameters:", { year, dayCount, place, race, round });
-    fetchHorses(); // データを取得する関数を呼び出し
+    fetchHorses();
   }, [year, dayCount, place, race, round]);
-
 
   const toggleHorse = (horse: number) => {
     setSelectedHorses((prev) =>
-      prev.includes(horse)
-        ? prev.filter((h) => h !== horse)
-        : [...prev, horse]
+      prev.includes(horse) ? prev.filter((h) => h !== horse) : [...prev, horse]
     );
   };
 
-  const generateCombinations = (horseNumbers: number[]) => {
-    const combinations: number[][] = [];
-    for (let i = 0; i < horseNumbers.length; i++) {
-      for (let j = i + 1; j < horseNumbers.length; j++) {
-        for (let k = j + 1; k < horseNumbers.length; k++) {
-          combinations.push([horseNumbers[i], horseNumbers[j], horseNumbers[k]]);
+ 
+  const generateTrifectaBox = (horseNumbers: number[]) => {
+    const results: number[][] = [];
+
+    // 組合せ生成
+    const getCombinations = (arr: number[], k: number): number[][] => {
+      const res: number[][] = [];
+      const helper = (start: number, combo: number[]) => {
+        if (combo.length === k) {
+          res.push([...combo]);
+          return;
         }
-      }
-    }
-    return combinations;
-    
+        for (let i = start; i < arr.length; i++) {
+          helper(i + 1, [...combo, arr[i]]);
+        }
+      };
+      helper(0, []);
+      return res;
+    };
+
+    // 順列生成
+    const getPermutations = (arr: number[]): number[][] => {
+      const res: number[][] = [];
+      const permute = (temp: number[], remaining: number[]) => {
+        if (remaining.length === 0) {
+          res.push(temp);
+          return;
+        }
+        for (let i = 0; i < remaining.length; i++) {
+          const next = remaining.slice();
+          const current = next.splice(i, 1);
+          permute(temp.concat(current), next);
+        }
+      };
+      permute([], arr);
+      return res;
+    };
+
+    // 組合せごとに順列を作成
+    const combinations = getCombinations(horseNumbers, 3);
+    combinations.forEach((combo) => {
+      const perms = getPermutations(combo);
+      results.push(...perms);
+    });
+
+    return results;
   };
-  
 
   const formatToTwoDigits = (value) => {
     if (typeof value === "string" && !isNaN(value)) {
@@ -74,31 +97,28 @@ export default function TrifectBox() {
     return value;
   };
 
-
   const getUserIdFromToken = (token) => {
     if (!token) return null;
     try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
+      const payload = token.split(".")[1];
+      const decodedPayload = JSON.parse(atob(payload));
+      return decodedPayload.sub?.id;
     } catch (error) {
-      console.error('Invalid token:', error);
+      console.error("Invalid token:", error);
       return null;
     }
   };
 
   const checkPayout = async () => {
     try {
-      // トークンからユーザーIDを取得
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (!token) {
-        alert('ログインしてください。');
+        alert("ログインしてください。");
         return;
       }
-
       const userId = getUserIdFromToken(token);
       if (!userId) {
-        alert('ユーザー認証に問題があります。');
+        alert("ユーザー認証に問題があります。");
         return;
       }
 
@@ -110,17 +130,14 @@ export default function TrifectBox() {
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: generateCombinations(selectedHorses),
-
+        combinations: generateTrifectaBox(selectedHorses),
       };
 
       console.log("Payload being sent:", formattedPayload);
 
       const response = await fetch("http://127.0.0.1:5000/api/check_payout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedPayload),
       });
 
@@ -138,16 +155,12 @@ export default function TrifectBox() {
     }
   };
 
-
-
-
-  const combinations = generateCombinations(selectedHorses);
+  const combinations = generateTrifectaBox(selectedHorses);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>三連単ボックス</Text>
 
-      {/* 馬番号を表示 */}
       <FlatList
         data={horses}
         numColumns={4}
@@ -165,36 +178,26 @@ export default function TrifectBox() {
         )}
       />
 
-      {/* 組み合わせを表示 */}
       <Text style={styles.resultTitle}>組み合わせ数: {combinations.length}</Text>
       <FlatList
         data={combinations}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <Text style={styles.combination}>{item.join(", ")}</Text>
+          <Text style={styles.combination}>{item.join(" → ")}</Text>
         )}
       />
+
       <Button title="払い戻し金額を確認" onPress={checkPayout} />
       <Text style={styles.result}>
         払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
       </Text>
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, textAlign: "center" },
   horseItem: {
     flex: 1,
     margin: 4,
@@ -203,26 +206,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 4,
   },
-  selectedHorse: {
-    backgroundColor: "#00adf5",
-  },
-  horseText: {
-    fontSize: 16,
-  },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 16,
-  },
-  combination: {
-    fontSize: 16,
-    marginVertical: 2,
-  },
-  result: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 16,
-  },
-
+  selectedHorse: { backgroundColor: "#00adf5" },
+  horseText: { fontSize: 16 },
+  resultTitle: { fontSize: 18, fontWeight: "bold", marginTop: 16 },
+  combination: { fontSize: 16, marginVertical: 2 },
+  result: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginTop: 16 },
 });
