@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Buffer } from "buffer";
 
 export default function ExactaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
@@ -12,7 +13,7 @@ export default function ExactaFormation() {
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
   const navigation = useNavigation();
   const route = useRoute();
-  const { year,dayCount, place, race, round } = route.params || {};
+  const { year, dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -23,7 +24,7 @@ export default function ExactaFormation() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ year,dayCount, place, race, round }),
+          body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -79,14 +80,16 @@ export default function ExactaFormation() {
     return value;
   };
 
-  const getUserIdFromToken = (token) => {
-    if (!token) return null;
+  const getUserIdFromToken = (token: string) => {
     try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
-    } catch (error) {
-      console.error('Invalid token:', error);
+      const payload = token.split(".")[1];
+      const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+      const decoded = JSON.parse(decodedJson);
+      console.log("JWT Payload:", decoded); // デバッグ用
+      const userId = parseInt(decoded.sub, 10);
+      return userId;
+    } catch (e) {
+      console.error("JWTデコードエラー", e);
       return null;
     }
   };
@@ -107,7 +110,7 @@ export default function ExactaFormation() {
       }
 
       const combinationsWithBetAmounts = calculateCombinations(
-        
+
       ).map((combination) => {
         const combinationKey = combination.join(",");
         const betAmount = betAmounts[combinationKey] || "0";
@@ -125,12 +128,13 @@ export default function ExactaFormation() {
       const formattedPayload = {
         userId,
         name: "馬単",
-        year:year,
+        year: year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations:combinationsWithBetAmounts
+        combinations: combinationsWithBetAmounts.map(item => item.combination),
+        amounts: combinationsWithBetAmounts.map(item => item.betAmount),
       };
 
 
