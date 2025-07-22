@@ -1,1 +1,53 @@
+### 払い戻し計算に使用するパラメーターの設定について（map関数の使い方）
 
+```
+{
+  "userId": 1,
+  "name": "馬単",
+  "year": "2025",
+  "dayCount": "05",
+  "place": "03",
+  "race": "08",
+  "round": "02",
+  "combinations": [["01", "02"], ["03", "04"]],
+  "amounts": ["100", "200"]
+}
+```
+・このような形でflaskにデータを送りたい
+・keyがcombination,amountにてmap関数を設定する必要がある
+```
+const combinationsWithBetAmounts = calculateCombinations(
+
+      ).map((combination) => {
+        const combinationKey = combination.join(",");
+        const betAmount = betAmounts[combinationKey] || "0";
+
+        return {
+          combination,
+          betAmount,
+        };
+      });
+```
+
+以下のように設定する。
+
+```
+const combinations = combinationsWithBetAmounts.map((item) => item.combination);
+const amounts = combinationsWithBetAmounts.map((item) => item.betAmount);
+```
+
+引数のitem（変数名）はrowとかhorseとかでもOK
+
+配列の 1つ目の要素 を引数に渡す
+
+関数を実行
+
+新しい配列に戻り値を入れる
+
+次の要素も同じように繰り返す
+
+つまり引数の名前は
+
+「1つの要素をどう呼ぶか？」
+
+の問題でしかないので何でもいい。
