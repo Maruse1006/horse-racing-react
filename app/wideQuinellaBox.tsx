@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
+import { Buffer } from "buffer";
 
 export default function WideQuinellaBox() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
@@ -66,6 +67,7 @@ export default function WideQuinellaBox() {
     return combinations;
   };
 
+  
   const formatToTwoDigits = (value: any) => {
     if (typeof value === "string" && !isNaN(value)) {
       return value.padStart(2, "0");
@@ -76,17 +78,20 @@ export default function WideQuinellaBox() {
     return value;
   };
 
-  const getUserIdFromToken = (token: string) => {
-    if (!token) return null;
-    try {
-      const payload = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payload));
-      return decodedPayload.sub?.id;
-    } catch (error) {
-      console.error("Invalid token:", error);
-      return null;
-    }
-  };
+      const getUserIdFromToken = (token: string) => {
+          try {
+              const payload = token.split(".")[1];
+              const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+              const decoded = JSON.parse(decodedJson);
+              console.log("JWT Payload:", decoded); // デバッグ用
+              const userId = parseInt(decoded.sub, 10);
+              return userId;
+          } catch (e) {
+              console.error("JWTデコードエラー", e);
+              return null;
+          }
+      };
+  
 
   const checkPayout = async () => {
     try {
@@ -125,11 +130,13 @@ export default function WideQuinellaBox() {
       const formattedPayload = {
         userId,
         name: "ワイド",
+        year:year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: combinationsWithBetAmounts,
+        combinations: combinationsWithBetAmounts.map((item) => item.combination),
+        amounts: combinationsWithBetAmounts.map((item) => item.betAmount)
       };
 
       console.log("送信ペイロード:", formattedPayload);
