@@ -95,16 +95,16 @@ export default function WinBet() {
         }
 
         const payload = {
-    userId: userId,
-    year: year,
-    name: "単勝", // 単勝指定
-    dayCount: formatToTwoDigits(dayCount),
-    place: formatToTwoDigits(place),
-    race: formatToTwoDigits(race),
-    round: formatToTwoDigits(round),
-    combinations: combinations.map((num) => formatToTwoDigits(num)), // 馬番だけ
-    amounts: combinations.map((num) => Number(betAmounts[num] || 0)) // 金額
-};
+            userId: userId,
+            year: year,
+            name: "単勝", // 単勝指定
+            dayCount: formatToTwoDigits(dayCount),
+            place: formatToTwoDigits(place),
+            race: formatToTwoDigits(race),
+            round: formatToTwoDigits(round),
+            combinations: combinations.map((num) => formatToTwoDigits(num)), // 馬番だけ
+            amounts: combinations.map((num) => Number(betAmounts[num] || 0)) // 金額
+        };
 
 
 

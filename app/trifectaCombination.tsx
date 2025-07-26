@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
 import { Buffer } from "buffer";
 
 
 export default function TrifectBox() {
+  const navigation = useNavigation<any>();
   const [horses, setHorses] = useState([]); // 馬データ用
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();
@@ -13,7 +14,7 @@ export default function TrifectBox() {
   const { year, dayCount, place, race, round } = route.params || {};
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
 
-  
+
   useEffect(() => {
     const fetchHorses = async () => {
       try {
@@ -101,19 +102,19 @@ export default function TrifectBox() {
     return value;
   };
 
-    const getUserIdFromToken = (token: string) => {
-        try {
-            const payload = token.split(".")[1];
-            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
-            const decoded = JSON.parse(decodedJson);
-            console.log("JWT Payload:", decoded); // デバッグ用
-            const userId = parseInt(decoded.sub, 10);
-            return userId;
-        } catch (e) {
-            console.error("JWTデコードエラー", e);
-            return null;
-        }
-    };
+  const getUserIdFromToken = (token: string) => {
+    try {
+      const payload = token.split(".")[1];
+      const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+      const decoded = JSON.parse(decodedJson);
+      console.log("JWT Payload:", decoded); // デバッグ用
+      const userId = parseInt(decoded.sub, 10);
+      return userId;
+    } catch (e) {
+      console.error("JWTデコードエラー", e);
+      return null;
+    }
+  };
 
   const checkPayout = async () => {
     try {
@@ -139,7 +140,7 @@ export default function TrifectBox() {
         combinations: generateTrifectaBox(selectedHorses),
         amounts: generateTrifectaBox(selectedHorses).map(
           (combo) => Number(betAmounts[combo.join(",")] || 0)
-        ), 
+        ),
       };
 
       console.log("Payload being sent:", formattedPayload);
@@ -170,6 +171,10 @@ export default function TrifectBox() {
     }));
   };
   const combinations = generateTrifectaBox(selectedHorses);
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
@@ -219,7 +224,11 @@ export default function TrifectBox() {
       <Text style={styles.result}>
         払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
       </Text>
+      <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+        <Text style={styles.backButtonText}>戻る</Text>
+      </TouchableOpacity>
     </View>
+
   );
 }
 
@@ -273,5 +282,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 16
+  },
+  backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
   },
 });
