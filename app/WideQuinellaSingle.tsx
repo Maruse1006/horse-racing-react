@@ -5,15 +5,18 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
 
-export default function ExactaFormation() {
+
+export default function WideQuinellaFormation() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [firstRow, setFirstRow] = useState([]);
   const [secondRow, setSecondRow] = useState([]);
   const [payout, setPayout] = useState(0); // 払い戻し金額
+  const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
+  
   const navigation = useNavigation();
   const route = useRoute();
-  const { year, dayCount, place, race, round } = route.params || {};
+  const { year,dayCount, place, race, round } = route.params || {};
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -24,7 +27,7 @@ export default function ExactaFormation() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ year, dayCount, place, race, round }),
+          body: JSON.stringify({ year,dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -42,11 +45,15 @@ export default function ExactaFormation() {
 
     console.log("Received parameters:", { dayCount, place, race, round });
     fetchHorses(); // データを取得する関数を呼び出し
-  }, [dayCount, place, race, round]);
+  }, [year,dayCount, place, race, round]);
 
-  const toggleSelection = (rowSetter, row, horse) => {
-    rowSetter((prev) =>
-      prev.includes(horse) ? prev.filter((h) => h !== horse) : [...prev, horse]
+  const toggleSelection = (rowSetter, row, horse,isSingleSelection = false) => {
+   rowSetter((prev) =>
+      prev.includes(horse)
+        ? prev.filter((h) => h !== horse)
+        : isSingleSelection
+          ? [horse]
+          : [...prev, horse]
     );
   };
 
@@ -58,7 +65,7 @@ export default function ExactaFormation() {
     rowSetter([]);
   };
 
-  const calculateCombinations = () => {
+  const calculateCombinations = (selectedHorses: number[]) => {
     const combinations = [];
     for (let a of firstRow) {
       for (let b of secondRow) {
@@ -80,19 +87,19 @@ export default function ExactaFormation() {
     return value;
   };
 
-  const getUserIdFromToken = (token: string) => {
-    try {
-      const payload = token.split(".")[1];
-      const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
-      const decoded = JSON.parse(decodedJson);
-      console.log("JWT Payload:", decoded); // デバッグ用
-      const userId = parseInt(decoded.sub, 10);
-      return userId;
-    } catch (e) {
-      console.error("JWTデコードエラー", e);
-      return null;
-    }
-  };
+    const getUserIdFromToken = (token: string) => {
+        try {
+            const payload = token.split(".")[1];
+            const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+            const decoded = JSON.parse(decodedJson);
+            console.log("JWT Payload:", decoded); // デバッグ用
+            const userId = parseInt(decoded.sub, 10);
+            return userId; 
+        } catch (e) {
+            console.error("JWTデコードエラー", e);
+            return null;
+        }
+    };
 
   const checkPayout = async () => {
     try {
@@ -109,35 +116,31 @@ export default function ExactaFormation() {
         return;
       }
 
-      const combinationsWithBetAmounts = calculateCombinations(
-
-      ).map((combination) => {
+      const combinationsWithBetAmounts = calculateCombinations().map((combination) => {
         const combinationKey = combination.join(",");
         const betAmount = betAmounts[combinationKey] || "0";
-
+      
         // ログ: 各組み合わせと賭け額
         console.log("組み合わせ:", combination, "→ キー:", combinationKey, "→ 賭け額:", betAmount);
-
+      
         return {
           combination,
           betAmount,
         };
       });
+            console.log("生成された組み合わせと賭け額:", combinationsWithBetAmounts);
 
 
       const formattedPayload = {
         userId,
-        name: "馬単",
-        year: year,
+        name: "ワイド",
+        year:year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: combinationsWithBetAmounts.map(item => item.combination),
-        amounts: combinationsWithBetAmounts.map(item => item.betAmount),
+        combinations: combinationsWithBetAmounts,
       };
-
-
 
       console.log("Payload being sent:", formattedPayload);
 
@@ -162,7 +165,6 @@ export default function ExactaFormation() {
       alert("バックエンドへのリクエストに失敗しました。");
     }
   };
-
   const handleBetAmountChange = (combinationKey: string, value: string) => {
     setBetAmounts((prev) => ({
       ...prev,
@@ -170,13 +172,14 @@ export default function ExactaFormation() {
     }));
   };
 
-  const combinations = calculateCombinations();
+
+  const combinations = calculateCombinations(selectedHorses);
 
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>馬単</Text>
+        <Text style={styles.title}>ワイドフォーメーション</Text>
         {/* 1列目 */}
         <View style={styles.row}>
           <Text style={styles.label}>1頭目</Text>
@@ -190,7 +193,7 @@ export default function ExactaFormation() {
                   styles.horseItem,
                   firstRow.includes(item.number) && styles.selectedHorse,
                 ]}
-                onPress={() => toggleSelection(setFirstRow, firstRow, item.number)}
+                onPress={() => toggleSelection(setFirstRow, firstRow, item.number,true)}
               >
                 <Text style={styles.horseText}>
                   {item.number}. {item.name}
@@ -233,29 +236,29 @@ export default function ExactaFormation() {
 
         {/* 結果表示 */}
         <Text style={styles.result}>
-          総組み合わせ数: {calculateCombinations().length}
+          総組み合わせ数: {calculateCombinations.length}
         </Text>
-        <FlatList
-          data={combinations}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {
-            const combinationKey = item.join(",");
-            return (
-              <View style={styles.rowCom}>
-                <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
-                <TextInput
-                  style={[styles.column, styles.input]}
-                  keyboardType="numeric"
-                  placeholder="賭け額"
-                  value={betAmounts[combinationKey] || ""}
-                  onChangeText={(value) =>
-                    handleBetAmountChange(combinationKey, value)
-                  }
-                />
-              </View>
-            );
-          }}
-        />
+      <FlatList
+        data={combinations}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => {
+          const combinationKey = item.join(",");
+          return (
+            <View style={styles.rowCom}>
+              <Text style={styles.column}>{`買い目: ${item.join(" - ")}`}</Text>
+              <TextInput
+                style={[styles.column, styles.input]}
+                keyboardType="numeric"
+                placeholder="賭け額"
+                value={betAmounts[combinationKey] || ""}
+                onChangeText={(value) =>
+                  handleBetAmountChange(combinationKey, value)
+                }
+              />
+            </View>
+          );
+        }}
+      />
 
         <Button title="払い戻し金額を確認" onPress={checkPayout} />
         <Text style={styles.result}>
@@ -278,18 +281,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: "center",
   },
-  row: {
-    marginBottom: 16,
-  },
   rowCom: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
 
+    marginBottom: 16,
+  },
   label: {
     fontSize: 18,
     marginBottom: 8,
@@ -319,14 +318,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    textAlign: "right",
-    fontSize: 16,
-  },
-
 });

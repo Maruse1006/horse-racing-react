@@ -11,6 +11,7 @@ export default function TrioSecondKeyScreen() {
   const [secondRow, setSecondRow] = useState([]); // 1・3着候補
   const [payout, setPayout] = useState(0); // 払い戻し金額
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({}); // 賭け額
+
   const route = useRoute();
   const { year, dayCount, place, race, round } = route.params || {};
 
@@ -276,12 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     width: 80,
     textAlign: "center",
-  },
-  result: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 16
+    marginTop: 16,
   },
   backButton: {
     backgroundColor: "#2196F3",
@@ -294,4 +290,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
+  result: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginTop: 16 },
 });

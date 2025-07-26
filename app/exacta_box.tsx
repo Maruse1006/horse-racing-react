@@ -2,16 +2,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, TextInput } from "react-native";
+import { Buffer } from "buffer";
 
 export default function ExactaBox() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();
-  const { year,dayCount, place, race, round } = route.params || {};
+  const { year, dayCount, place, race, round } = route.params || {};
   const [payout, setPayout] = useState(0); // 払い戻し金額
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
-
-
 
   useEffect(() => {
     // 馬データをバックエンドから取得
@@ -22,13 +21,14 @@ export default function ExactaBox() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ year,dayCount, place, race, round }),
+          body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
+
         if (data.success) {
           // 馬データを番号順にソートして保存
           const sortedHorses = data.horses.sort((a, b) => parseInt(a.number) - parseInt(b.number));
-          setHorses(sortedHorses); // ソート済みの馬データを保存
+          setHorses(sortedHorses);
         } else {
           alert("馬データの取得に失敗しました。");
         }
@@ -38,9 +38,9 @@ export default function ExactaBox() {
       }
     };
 
-    console.log("Received parameters:", { year,dayCount, place, race, round });
-    fetchHorses(); // データを取得する関数を呼び出し
-  }, [year,dayCount, place, race, round]);
+    console.log("Received parameters:", { year, dayCount, place, race, round });
+    fetchHorses();
+  }, [year, dayCount, place, race, round]);
 
   const handleBetAmountChange = (combinationKey: string, value: string) => {
     setBetAmounts((prev) => ({
@@ -49,21 +49,20 @@ export default function ExactaBox() {
     }));
   };
 
-
-
   const toggleHorse = (horse: number) => {
     setSelectedHorses((prev) =>
-      prev.includes(horse)
-        ? prev.filter((h) => h !== horse)
-        : [...prev, horse]
+      prev.includes(horse) ? prev.filter((h) => h !== horse) : [...prev, horse]
     );
   };
 
+  // 馬単ボックス用: 選んだ馬から順序ありの全組み合わせを生成
   const generateCombinations = (horseNumbers: number[]) => {
     const combinations: number[][] = [];
     for (let i = 0; i < horseNumbers.length; i++) {
-      for (let j = i + 1; j < horseNumbers.length; j++) {
-        combinations.push([horseNumbers[i], horseNumbers[j]]);
+      for (let j = 0; j < horseNumbers.length; j++) {
+        if (i !== j) {
+          combinations.push([horseNumbers[i], horseNumbers[j]]);
+        }
       }
     }
     return combinations;
@@ -79,22 +78,22 @@ export default function ExactaBox() {
     return value;
   };
 
-
-  const getUserIdFromToken = (token) => {
-    if (!token) return null;
+  const getUserIdFromToken = (token: string) => {
     try {
-      const payload = token.split('.')[1]; // JWTのペイロード部分を取得
-      const decodedPayload = JSON.parse(atob(payload)); // Base64デコードしてJSONに変換
-      return decodedPayload.sub?.id; // ペイロード内のユーザーIDを取得
-    } catch (error) {
-      console.error('Invalid token:', error);
+      const payload = token.split(".")[1];
+      const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+      const decoded = JSON.parse(decodedJson);
+      console.log("JWT Payload:", decoded); // デバッグ用
+      const userId = parseInt(decoded.sub, 10);
+      return userId;
+    } catch (e) {
+      console.error("JWTデコードエラー", e);
       return null;
     }
   };
 
   const checkPayout = async () => {
     try {
-      // トークンからユーザーIDを取得
       const token = await AsyncStorage.getItem('token');
       if (!token) {
         alert('ログインしてください。');
@@ -107,31 +106,25 @@ export default function ExactaBox() {
         return;
       }
 
-      const combinationsWithBetAmounts = generateCombinations(
-        selectedHorses
-      ).map((combination) => {
-        const combinationKey = combination.join(",");
-        const betAmount = betAmounts[combinationKey] || "0";
-
-        // ログ: 各組み合わせと賭け額
-        console.log("組み合わせ:", combination, "→ キー:", combinationKey, "→ 賭け額:", betAmount);
-
-        return {
-          combination,
-          betAmount,
-        };
-      });
-
+      // 賭け額が0以外の組み合わせだけを抽出
+      const combinationsWithBetAmounts = generateCombinations(selectedHorses)
+        .map((combination) => {
+          const combinationKey = combination.join(",");
+          const betAmount = betAmounts[combinationKey] || "0";
+          return { combination, betAmount };
+        })
+        .filter((item) => parseInt(item.betAmount, 10) > 0); // 0円の組み合わせを除外
 
       const formattedPayload = {
         userId,
         name: "馬単",
+        year:year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
         round: formatToTwoDigits(round),
-        combinations: combinationsWithBetAmounts,
-
+        combinations: combinationsWithBetAmounts.map(item => item.combination),
+        amounts: combinationsWithBetAmounts.map(item => item.betAmount),
       };
 
       console.log("Payload being sent:", formattedPayload);
@@ -157,9 +150,6 @@ export default function ExactaBox() {
       alert("バックエンドへのリクエストに失敗しました。");
     }
   };
-
-
-
 
   const combinations = generateCombinations(selectedHorses);
 
@@ -207,11 +197,11 @@ export default function ExactaBox() {
           );
         }}
       />
+
       <Button title="払い戻し金額を確認" onPress={checkPayout} />
       <Text style={styles.result}>
         払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
       </Text>
-
     </View>
   );
 }
@@ -247,10 +237,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 16,
   },
-  combination: {
-    fontSize: 16,
-    marginVertical: 2,
-  },
   result: {
     fontSize: 18,
     fontWeight: "bold",
@@ -278,6 +264,4 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontSize: 16,
   },
-
-
 });

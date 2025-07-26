@@ -45,6 +45,7 @@ import GradeCourseAnalysis from "../app/grade-course-analysis";
 import GradeRaceDetail from "../app/grade-course-analysis/detail";
 import QuinellaBox from "../app/quinella_box";
 import QuinellaSingleAxis from "../app/quinella_single_axis";
+import WideQuinellaSingle from "../app/WideQuinellaSingle";
 
 
 const Drawer = createDrawerNavigator();
@@ -68,6 +69,7 @@ function MainStack() {
       <Stack.Screen name="WideQuinella" component={WideQuinellaBettingType} />
       <Stack.Screen name="WideQuinellaBox" component={WideQuinellaBox} />
       <Stack.Screen name="WideQuinellaFormation" component={WideQuinellaFormation} />
+      <Stack.Screen name="WideQuinellaSingle" component={WideQuinellaSingle} />
       <Stack.Screen name="TrioSecondKey" component={TrioSecondKeyScreen} />
       <Stack.Screen name="TrioThirdKey" component={TrioThirdKeyScreen} />
       <Stack.Screen name="TrioFirstKey" component={TrioFirstKeyScreen} />
