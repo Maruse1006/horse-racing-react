@@ -43,7 +43,6 @@ export default function BettingOptionsScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>式別</Text>
-            <Text>選択した情報: 開催日数={dayCount}, 場所={place}, レース番号={race}</Text>
             <FlatList
                 data={bettingOptions}
                 keyExtractor={(item) => item.id}

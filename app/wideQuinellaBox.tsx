@@ -16,7 +16,7 @@ export default function WideQuinellaBox() {
   const [horses, setHorses] = useState([]); // 馬データ用のステート
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const route = useRoute();
-  const { year,dayCount, place, race, round } = route.params || {};
+  const { year, dayCount, place, race, round } = route.params || {};
   const [payout, setPayout] = useState(0);
   const [betAmounts, setBetAmounts] = useState<{ [key: string]: string }>({});
 
@@ -28,7 +28,7 @@ export default function WideQuinellaBox() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ year,dayCount, place, race, round }),
+          body: JSON.stringify({ year, dayCount, place, race, round }),
         });
         const data = await response.json();
         if (data.success) {
@@ -45,9 +45,9 @@ export default function WideQuinellaBox() {
       }
     };
 
-    console.log("Received parameters:", { year,dayCount, place, race, round });
+    console.log("Received parameters:", { year, dayCount, place, race, round });
     fetchHorses();
-  }, [year,dayCount, place, race, round]);
+  }, [year, dayCount, place, race, round]);
 
   const toggleHorse = (horse: number) => {
     setSelectedHorses((prev) =>
@@ -67,7 +67,7 @@ export default function WideQuinellaBox() {
     return combinations;
   };
 
-  
+
   const formatToTwoDigits = (value: any) => {
     if (typeof value === "string" && !isNaN(value)) {
       return value.padStart(2, "0");
@@ -78,20 +78,20 @@ export default function WideQuinellaBox() {
     return value;
   };
 
-      const getUserIdFromToken = (token: string) => {
-          try {
-              const payload = token.split(".")[1];
-              const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
-              const decoded = JSON.parse(decodedJson);
-              console.log("JWT Payload:", decoded); // デバッグ用
-              const userId = parseInt(decoded.sub, 10);
-              return userId;
-          } catch (e) {
-              console.error("JWTデコードエラー", e);
-              return null;
-          }
-      };
-  
+  const getUserIdFromToken = (token: string) => {
+    try {
+      const payload = token.split(".")[1];
+      const decodedJson = Buffer.from(payload, "base64").toString("utf-8");
+      const decoded = JSON.parse(decodedJson);
+      console.log("JWT Payload:", decoded); // デバッグ用
+      const userId = parseInt(decoded.sub, 10);
+      return userId;
+    } catch (e) {
+      console.error("JWTデコードエラー", e);
+      return null;
+    }
+  };
+
 
   const checkPayout = async () => {
     try {
@@ -130,7 +130,7 @@ export default function WideQuinellaBox() {
       const formattedPayload = {
         userId,
         name: "ワイド",
-        year:year,
+        year: year,
         dayCount: formatToTwoDigits(dayCount),
         place: formatToTwoDigits(place),
         race: formatToTwoDigits(race),
@@ -173,6 +173,10 @@ export default function WideQuinellaBox() {
   };
 
   const combinations = generateCombinations(selectedHorses);
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
@@ -224,6 +228,9 @@ export default function WideQuinellaBox() {
       <Text style={styles.result}>
         払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
       </Text>
+      <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+        <Text style={styles.backButtonText}>戻る</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -286,5 +293,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
-  
+    backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  },
+
 });

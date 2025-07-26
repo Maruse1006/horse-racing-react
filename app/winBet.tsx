@@ -131,6 +131,9 @@ export default function WinBet() {
             Alert.alert("エラー", "サーバーとの通信に失敗しました。");
         }
     };
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
 
     return (
         <ScrollView>
@@ -174,6 +177,9 @@ export default function WinBet() {
                 <Text style={styles.result}>
                     払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
                 </Text>
+                <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+                    <Text style={styles.backButtonText}>戻る</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -208,5 +214,16 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginTop: 16,
+    },
+    backButton: {
+        backgroundColor: "#2196F3",
+        padding: 12,
+        marginTop: 16,
+        borderRadius: 8,
+    },
+    backButtonText: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 16,
     },
 });

@@ -150,9 +150,9 @@ export default function TrioFirstKeyScreen() {
 
   const combinations = calculateCombinations();
 
-   const handleGoBack = () => {
-        navigation.goBack();
-    };
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <ScrollView>
@@ -235,9 +235,9 @@ export default function TrioFirstKeyScreen() {
           払い戻し金額: {payout > 0 ? `¥${payout}` : "該当なし"}
         </Text>
         {/*  戻るボタン */}
-                    <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-                        <Text style={styles.backButtonText}>戻る</Text>
-                    </TouchableOpacity>
+        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <Text style={styles.backButtonText}>戻る</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -274,20 +274,21 @@ const styles = StyleSheet.create({
     width: 80,
     textAlign: "center",
   },
-  result: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    marginTop: 16 },
-        backButton: {
-        backgroundColor: "#2196F3",
-        padding: 12,
-        marginTop: 16,
-        borderRadius: 8,
-    },
-    backButtonText: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 16,
-    },
+  result: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 16
+  },
+  backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  },
 });
