@@ -1,7 +1,6 @@
 // Layout.tsx
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native';
-import RequestButton from '../../components/RequestButton';
 import PedigreeTable from '../../components/PedigreeTable ';
 
 
@@ -15,7 +14,6 @@ export default function Blood() {
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <RequestButton onFetchData={handleDataFetch} />
       <PedigreeTable data={pedigreeData} /> {/* 取得したデータを PedigreeTable に渡す */}
     </SafeAreaView>
   );
