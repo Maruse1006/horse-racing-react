@@ -14,7 +14,7 @@ import {
 } from "victory";
 import { calendarData } from "../data/calendarData";
 import { useNavigation } from "@react-navigation/native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 
 
 export default function Dashboard() {
