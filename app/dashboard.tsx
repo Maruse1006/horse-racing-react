@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -32,24 +31,22 @@ export default function Dashboard() {
           return;
         }
 
-        
-
         const response = await fetch("http://127.0.0.1:5000/api/bet-summary", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-         if (response.status === 401) {
-        // トークン無効 ⇒ ログアウト処理
-        await AsyncStorage.removeItem("token");
-        Alert.alert("セッション切れ", "再度ログインしてください。");
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Login" }],
-        });
-        return;
-      }
+
+        if (response.status === 401) {
+          await AsyncStorage.removeItem("token");
+          Alert.alert("セッション切れ", "再度ログインしてください。");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
+          return;
+        }
 
         const data = await response.json();
         setSummary(data);
@@ -59,10 +56,9 @@ export default function Dashboard() {
             const actualDate = findActualDate(
               calendarData,
               entry.date_info,
-              entry.location, 
+              entry.location,
               entry.round
             );
-
             return {
               x: actualDate,
               y: entry.total_amount,
@@ -70,19 +66,22 @@ export default function Dashboard() {
           })
           .filter((item) => item.x);
 
-        console.log("✅ 変換後のグラフデータ", converted);
-        setChartData(converted);
+        const sortedData = converted.sort(
+          (a, b) => new Date(a.x) - new Date(b.x)
+        );
+        setChartData(sortedData);
 
-        const yValues = converted.map((d) => d.y);
+        const yValues = sortedData.map((d) => d.y);
         const max = yValues.length > 0 ? Math.max(...yValues) : 1;
-        const step = Math.pow(10, Math.floor(Math.log10(max)) - 1);
-        const ticks = [];
+        const niceMax = Math.ceil(max / 10000) * 10000;
+        const step = niceMax / 4;
 
-        for (let i = 0; i <= max * 1.1; i += step) {
+        const ticks = [];
+        for (let i = 0; i <= niceMax; i += step) {
           ticks.push(i);
         }
 
-        setMaxY(max * 1.1);
+        setMaxY(niceMax);
         setTickValues(ticks);
       } catch (error) {
         console.error("エラーが発生しました:", error);
@@ -106,22 +105,25 @@ export default function Dashboard() {
               padding={{ top: 20, bottom: 70, left: 70, right: 40 }}
             >
               <VictoryAxis
-                tickFormat={(x) => {
+                tickFormat={(x, index) => {
                   const d = new Date(x);
-                  return `${d.getMonth() + 1}月${d.getDate()}日`;
+                  const interval = Math.ceil(chartData.length / 7);
+                  return index % interval === 0
+                    ? `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
+                    : "";
                 }}
                 style={{
                   tickLabels: {
                     fontSize: 10,
-                    angle: -45,
-                    padding: 10,
+                    angle: -30,
+                    padding: 15,
                   },
                 }}
               />
               <VictoryAxis
                 dependentAxis
                 tickValues={tickValues}
-                tickFormat={(y) => `${(y / 10000).toFixed(0)}万`}
+                tickFormat={(y) => y.toLocaleString()}
                 style={{
                   tickLabels: { fontSize: 10, padding: 5 },
                 }}
@@ -151,9 +153,6 @@ export default function Dashboard() {
 }
 
 const findActualDate = (calendarData, dateInfo, placeId, round) => {
-  // const normalizedDay = String(dateInfo).padStart(2, "0");
-  // const normalizedRound = String(round).padStart(2, "0");
-
   for (const date in calendarData) {
     const entries = calendarData[date];
     for (const entry of entries) {
@@ -166,7 +165,6 @@ const findActualDate = (calendarData, dateInfo, placeId, round) => {
       }
     }
   }
-
   return null;
 };
 
