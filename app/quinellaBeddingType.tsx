@@ -32,6 +32,9 @@ export default function QuinellaBeddingType() {
     });
   }
 };
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
 
   return (
@@ -51,6 +54,9 @@ export default function QuinellaBeddingType() {
           
         )}
       />
+      <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+              <Text style={styles.backButtonText}>戻る</Text>
+            </TouchableOpacity>
     </View>
   );
 }
@@ -83,4 +89,16 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
   },
+    backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  },
+
 });
