@@ -14,7 +14,7 @@ export default function ExactaBeddingType() {
   const { year, round, place, race, dayCount } = route.params || {};
   React.useEffect(() => {
     console.log("Received parameters:", { dayCount, place, race });
-  }, [year,dayCount, place, race]);
+  }, [year, dayCount, place, race]);
 
   const handlePress = (option) => {
     console.log(`選択されたオプション: ${option.label}`);
@@ -29,11 +29,13 @@ export default function ExactaBeddingType() {
       });
     }
   };
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>馬単式別</Text>
-      <Text>選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}</Text>
       <FlatList
         data={options}
         keyExtractor={(item) => item.id}
@@ -46,6 +48,9 @@ export default function ExactaBeddingType() {
           </TouchableOpacity>
         )}
       />
+      <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+        <Text style={styles.backButtonText}>戻る</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -95,6 +100,18 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontSize: 16,
   },
+  backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  }
+
 
 
 });

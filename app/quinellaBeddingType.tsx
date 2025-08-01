@@ -1,37 +1,37 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useNavigation, useRoute} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const options = [
   { id: "1", label: "フォーメーション", screen: "QuinellaFormation" },
-  { id: "2", label: "ボックス",screen: "QuinellaBox" },
-  { id: "3", label: "軸 1 頭流し",screen: "QuinellaSingleAxis" },
+  { id: "2", label: "ボックス", screen: "QuinellaBox" },
+  { id: "3", label: "軸 1 頭流し", screen: "QuinellaSingleAxis" },
 ];
 
 export default function QuinellaBeddingType() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { year,round, place, race,dayCount } = route.params || {}; 
+  const { year, round, place, race, dayCount } = route.params || {};
   React.useEffect(() => {
-      console.log("Received parameters:", { dayCount, place, race });
-    }, [dayCount, place, race]);
+    console.log("Received parameters:", { dayCount, place, race });
+  }, [dayCount, place, race]);
 
   const handlePress = (option) => {
-  console.log(`選択されたオプション: ${option.label}`);
-  console.log(`選択されたオプション: ${option.screen}`);
-  if (option.screen) {
-    navigation.navigate("MainStack", {
-      screen: option.screen,
-      params: {
-        year,
-        round,
-        place,
-        race,
-        dayCount,
-      },
-    });
-  }
-};
+    console.log(`選択されたオプション: ${option.label}`);
+    console.log(`選択されたオプション: ${option.screen}`);
+    if (option.screen) {
+      navigation.navigate("MainStack", {
+        screen: option.screen,
+        params: {
+          year,
+          round,
+          place,
+          race,
+          dayCount,
+        },
+      });
+    }
+  };
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -51,12 +51,12 @@ export default function QuinellaBeddingType() {
           >
             <Text style={styles.itemText}>{item.label}</Text>
           </TouchableOpacity>
-          
+
         )}
       />
       <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-              <Text style={styles.backButtonText}>戻る</Text>
-            </TouchableOpacity>
+        <Text style={styles.backButtonText}>戻る</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
   },
-    backButton: {
+  backButton: {
     backgroundColor: "#2196F3",
     padding: 12,
     marginTop: 16,
