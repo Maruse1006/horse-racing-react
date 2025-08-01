@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [maxY, setMaxY] = useState(0);
   const [tickValues, setTickValues] = useState([]);
 
-  // 年度でデータを絞る関数（2024 → 2024年4月1日〜2025年3月31日）
+ 
   const filterByFiscalYear = (data, year) => {
     const start = new Date(`${year}-04-01`);
     const end = new Date(`${parseInt(year) + 1}-03-31`);

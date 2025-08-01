@@ -24,10 +24,25 @@ export const calendarData = {
     { placeId: "06", round: "05", day: "08" }, // 中山競馬場
     { placeId: "07", round: "第2回", day: "02" }, // 中京競馬場
   ],
-  "2025-06-14": [
-    { placeId: "02", round: "01", day: "01" }, 
-    { placeId: "07", round: "第2回", day: "02",year: "2025" }, // 中京競馬場
+  "2025-05-31": [
+    { placeId: "05", round: "02", day: "11" }, // 中山競馬場
+    { placeId: "07", round: "第2回", day: "02" }, // 中京競馬場
   ],
+  "2025-06-14": [
+    { placeId: "02", round: "01", day: "01" },
+    { placeId: "07", round: "第2回", day: "02", year: "2025" }, // 中京競馬場
+  ],
+  "2025-07-20": [
+    { placeId: "02", round: "01", day: "12" },
+    { placeId: "07", round: "第2回", day: "02", year: "2025" }, // 中京競馬場
+  ],
+  "2025-07-20": [
+    { placeId: "02", round: "01", day: "12" },
+    { placeId: "07", round: "第2回", day: "02", year: "2025" }, // 中京競馬場
+  ],
+
+
+
 };
 
 export const placeData = [
