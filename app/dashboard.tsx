@@ -12,7 +12,8 @@ import {
   VictoryLine,
   VictoryAxis,
   VictoryScatter,
-} from "victory";import { Picker } from "@react-native-picker/picker";
+} from "victory"; // ← react-nativeの場合は victory-native
+import { Picker } from "@react-native-picker/picker";
 import { calendarData } from "../data/calendarData";
 import { useNavigation } from "@react-navigation/native";
 
@@ -23,9 +24,9 @@ export default function Dashboard() {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedYear, setSelectedYear] = useState("2024");
   const [maxY, setMaxY] = useState(0);
+  const [minY, setMinY] = useState(0); // ← 追加
   const [tickValues, setTickValues] = useState([]);
 
- 
   const filterByFiscalYear = (data, year) => {
     const start = new Date(`${year}-04-01`);
     const end = new Date(`${parseInt(year) + 1}-03-31`);
@@ -35,7 +36,6 @@ export default function Dashboard() {
     });
   };
 
-  // データ取得
   useEffect(() => {
     const fetchSummary = async () => {
       try {
@@ -101,15 +101,20 @@ export default function Dashboard() {
 
     const yValues = fiscalData.map((d) => d.y);
     const max = yValues.length > 0 ? Math.max(...yValues) : 0;
-    const niceMax = max > 0 ? Math.ceil(max / 10000) * 10000 : 10000;
-    const step = niceMax / 4;
+    const min = yValues.length > 0 ? Math.min(...yValues) : 0;
+
+    const niceMax = Math.ceil(max / 10000) * 10000;
+    const niceMin = Math.floor(min / 10000) * 10000;
+
+    const step = (niceMax - niceMin) / 4 || 1;
     const ticks = [];
-    for (let i = 0; i <= niceMax; i += step) {
-      ticks.push(i);
+    for (let i = niceMin; i <= niceMax; i += step) {
+      ticks.push(Math.round(i));
     }
 
-    setMaxY(niceMax);
     setTickValues(ticks);
+    setMaxY(niceMax);
+    setMinY(niceMin); // 追加
   }, [chartData, selectedYear]);
 
   return (
@@ -131,7 +136,7 @@ export default function Dashboard() {
         <ScrollView horizontal>
           <View style={{ width: Math.max(400, filteredData.length * 80) }}>
             <VictoryChart
-              domain={{ y: [0, maxY] }}
+              domain={{ y: [minY, maxY] }} // ← ここが重要
               width={Math.max(400, filteredData.length * 80)}
               height={300}
               padding={{ top: 20, bottom: 70, left: 70, right: 40 }}
