@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, Alert, ScrollView } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
@@ -102,6 +102,7 @@ export default function RaceSelectionScreen() {
   };
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Calendar
         onDayPress={(day) => setSelectedDate(day.dateString)}
@@ -140,6 +141,7 @@ export default function RaceSelectionScreen() {
         color="#228b22"
       />
     </View>
+    </ScrollView>
   );
 }
 
