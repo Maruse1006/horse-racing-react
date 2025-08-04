@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -12,19 +12,21 @@ import {
   VictoryLine,
   VictoryAxis,
   VictoryScatter,
-} from "victory"; // ← react-nativeの場合は victory-native
+} from "victory"; // ← victory ではなく victory-native に変更
 import { Picker } from "@react-native-picker/picker";
 import { calendarData } from "../data/calendarData";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../src/context/AuthContext";
 
 export default function Dashboard() {
+  const { logout } = useContext(AuthContext)!; 
   const navigation = useNavigation();
   const [summary, setSummary] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedYear, setSelectedYear] = useState("2024");
   const [maxY, setMaxY] = useState(0);
-  const [minY, setMinY] = useState(0); // ← 追加
+  const [minY, setMinY] = useState(0);
   const [tickValues, setTickValues] = useState([]);
 
   const filterByFiscalYear = (data, year) => {
@@ -35,6 +37,18 @@ export default function Dashboard() {
       return date >= start && date <= end;
     });
   };
+
+  const handleLogout = async () => {
+    try {
+      console.log("🧹 Logging out...");
+      await logout(); 
+      console.log("✅ Logout complete");
+    } catch (error) {
+      console.error("❌ Logout failed:", error);
+      Alert.alert("ログアウト失敗", "もう一度お試しください。");
+    }
+  };
+
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -94,7 +108,6 @@ export default function Dashboard() {
     fetchSummary();
   }, []);
 
-  // 年度切り替え時にfilteredData更新
   useEffect(() => {
     const fiscalData = filterByFiscalYear(chartData, selectedYear);
     setFilteredData(fiscalData);
@@ -114,14 +127,13 @@ export default function Dashboard() {
 
     setTickValues(ticks);
     setMaxY(niceMax);
-    setMinY(niceMin); // 追加
+    setMinY(niceMin);
   }, [chartData, selectedYear]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>日別賭け金グラフ（年度別）</Text>
 
-      {/* 年度選択 */}
       <Picker
         selectedValue={selectedYear}
         onValueChange={(itemValue) => setSelectedYear(itemValue)}
@@ -136,7 +148,7 @@ export default function Dashboard() {
         <ScrollView horizontal>
           <View style={{ width: Math.max(400, filteredData.length * 80) }}>
             <VictoryChart
-              domain={{ y: [minY, maxY] }} // ← ここが重要
+              domain={{ y: [minY, maxY] }}
               width={Math.max(400, filteredData.length * 80)}
               height={300}
               padding={{ top: 20, bottom: 70, left: 70, right: 40 }}
@@ -175,6 +187,13 @@ export default function Dashboard() {
       ) : (
         <Text>データがありません。</Text>
       )}
+
+      {/* ログアウトボタン */}
+      <View style={styles.logoutContainer}>
+        <Text style={styles.logoutText} onPress={handleLogout}>
+          ログアウト
+        </Text>
+      </View>
     </View>
   );
 }
@@ -213,5 +232,18 @@ const styles = StyleSheet.create({
     height: 50,
     width: 200,
     alignSelf: "center",
+  },
+  logoutContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  logoutText: {
+    color: "red",
+    fontSize: 16,
+    fontWeight: "bold",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "red",
+    borderRadius: 5,
   },
 });
