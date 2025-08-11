@@ -24,6 +24,17 @@
     "experiments": {
       "typedRoutes": true
     },
-    "entryPoint": "./src/App.tsx"
+    "entryPoint": "./src/App.tsx",
+    "extra": {
+      "eas": {
+        "projectId": "384688e0-8c9c-41a8-b980-b14d315593ef"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/384688e0-8c9c-41a8-b980-b14d315593ef"
+    }
   }
 }
