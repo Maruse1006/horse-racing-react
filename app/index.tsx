@@ -7,16 +7,14 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import backImg from "../assets/images/back.jpg";
+import { useNavigation } from '@react-navigation/native';
 
 
-export default function Home() {
-  const navigation = useNavigation(); 
+export default function Layout() {
   const menuItems = [
-    { id: "1", title: "血統検索", icon: "📋", screen: "Blood" },
-    { id: "2", title: "収支登録", icon: "📈", screen: "RaceSelection" },
-    { id: "3", title: "重賞分析・コース分析", icon: "📅",screen:"GradeCourseAnalysis" },
+    { id: "1", title: "血統検索", icon: "📋", screen: "blood" },
+    { id: "2", title: "収支登録", icon: "📈" , screen: "buy"},
+    { id: "3", title: "レーシングカレンダー", icon: "📅" },
     { id: "4", title: "レース結果", icon: "🏆" },
   ];
 
@@ -25,10 +23,7 @@ export default function Home() {
       style={styles.menuItem}
       onPress={() => {
         if (item.screen) {
-          // navigation.navigate(item.screen);
-          navigation.navigate("MainStack", {
-            screen: item.screen
-          });
+          navigation.navigate(item.screen);
         }
       }}
     >
@@ -40,10 +35,10 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <ImageBackground
-  source={backImg}
-  style={styles.backgroundImage}
-  resizeMode="cover"
->
+        source={require("../../assets/images/back.jpg")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.content}>
           <Text style={styles.title}>競馬ラボ</Text>
           <FlatList

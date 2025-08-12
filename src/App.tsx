@@ -4,6 +4,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, ActivityIndicator } from "react-native";
+import 'react-native-gesture-handler';
+
 
 // AuthContext を追加
 import { AuthContext } from "../src/context/AuthContext";
