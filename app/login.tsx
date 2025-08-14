@@ -20,12 +20,13 @@ export default function LoginScreen(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   const handleLogin = async () => {
     setMessage(''); // メッセージをリセット
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/login', {
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

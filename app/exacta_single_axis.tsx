@@ -13,12 +13,13 @@ export default function ExactaSingleAxisScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { year,dayCount, place, race, round } = route.params || {};
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   // 馬データ取得
   useEffect(() => {
     const fetchHorses = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
+        const response = await fetch(`API_URL/api/get_horses`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

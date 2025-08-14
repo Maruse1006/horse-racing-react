@@ -14,12 +14,13 @@ export default function ExactaFormation() {
   const navigation = useNavigation();
   const route = useRoute();
   const { year, dayCount, place, race, round } = route.params || {};
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
     // 馬データをバックエンドから取得
     const fetchHorses = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
+        const response = await fetch(`API_URL/api/get_horses`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

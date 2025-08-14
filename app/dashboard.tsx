@@ -12,7 +12,7 @@ import {
   VictoryLine,
   VictoryAxis,
   VictoryScatter,
-} from "victory"; // ← victory ではなく victory-native に変更
+} from "victory"; 
 import { Picker } from "@react-native-picker/picker";
 import { calendarData } from "../data/calendarData";
 import { useNavigation } from "@react-navigation/native";
@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [maxY, setMaxY] = useState(0);
   const [minY, setMinY] = useState(0);
   const [tickValues, setTickValues] = useState([]);
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   const filterByFiscalYear = (data, year) => {
     const start = new Date(`${year}-04-01`);
@@ -59,7 +60,7 @@ export default function Dashboard() {
           return;
         }
 
-        const response = await fetch("http://127.0.0.1:5000/api/bet-summary", {
+        const response = await fetch(`${API_URL}/api/bet-summary`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

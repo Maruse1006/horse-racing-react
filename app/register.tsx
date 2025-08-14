@@ -6,6 +6,7 @@ const Register = () => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   const onSubmit = async () => {
     if (password !== confirmPassword) {
@@ -14,7 +15,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/register', {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

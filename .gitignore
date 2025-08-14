@@ -23,3 +23,5 @@ expo-env.d.ts
 *.pickle
 .env
 __pycache__/
+.env.local
+.env.production

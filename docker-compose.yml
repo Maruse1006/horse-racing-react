@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+      TZ: Asia/Tokyo
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d:ro   # 例: 文字コード設定など
+      - ./mysql/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  mysql_data:

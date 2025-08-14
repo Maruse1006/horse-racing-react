@@ -21,14 +21,18 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
-    "undefined": "\\",
     "victory": "^37.3.6"
+  },
+  "scripts": {
+    "dev:web": "env-cmd -f .env.local expo start --web",
+    "dev:native": "env-cmd -f .env.local expo start"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@types/victory": "^35.0.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "env-cmd": "^10.1.0",
     "typescript": "^5.3.3"
   }
 }

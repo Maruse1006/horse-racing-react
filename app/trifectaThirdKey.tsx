@@ -13,12 +13,13 @@ export default function TrioThirdKeyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { dayCount, place, race, round } = route.params || {};
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
     // 馬データをバックエンドから取得
     const fetchHorses = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/get_horses", {
+        const response = await fetch(`${API_URL}/api/get_horses`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -131,7 +132,7 @@ export default function TrioThirdKeyScreen() {
 
       console.log("Payload being sent:", formattedPayload);
 
-      const response = await fetch("http://127.0.0.1:5000/api/check_payout", {
+      const response = await fetch(`${API_URL}/api/check_payout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
