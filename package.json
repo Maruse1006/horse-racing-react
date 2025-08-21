@@ -27,7 +27,7 @@
   "scripts": {
     "dev:web": "expo start --web",
     "dev:native": "expo start",
-    "build": "npx expo export -p web",     // dist/ に index.html を出力
+    "build": "npx expo export -p web",
     "preview": "npx serve dist"
   },
   "devDependencies": {

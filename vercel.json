@@ -1,14 +1,10 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "https://keiba-app.com/api/$1" },  // APIは外部へ
-    { "src": "/(.*)", "dest": "/index.html" }                        // それ以外はSPA
+    { "src": "/api/(.*)", "dest": "https://keiba-app.com/api/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
