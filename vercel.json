@@ -5,7 +5,7 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "https://keiba-app.com/api/$1" },
-    { "handle": "filesystem" },                 // まず実在ファイル(.js/.css/画像等)をそのまま返す
-    { "src": "/(.*)", "dest": "/index.html" }   // それ以外だけ SPA フォールバック
+    { "handle": "filesystem" },                 
+    { "src": "/(.*)", "dest": "/index.html" }   
   ]
 }
