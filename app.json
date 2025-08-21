@@ -12,29 +12,29 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
+    "ios": { "supportsTablet": true },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.maruse1006.keiba_react"
     },
-    "experiments": {
-      "typedRoutes": true
-    },
+    "experiments": { "typedRoutes": true },
     "entryPoint": "./src/App.tsx",
     "extra": {
-      "eas": {
-        "projectId": "384688e0-8c9c-41a8-b980-b14d315593ef"
-      }
+      "eas": { "projectId": "384688e0-8c9c-41a8-b980-b14d315593ef" }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": { "policy": "appVersion" },
     "updates": {
       "url": "https://u.expo.dev/384688e0-8c9c-41a8-b980-b14d315593ef"
-    }
+    },
+    "plugins": [
+      ["expo-build-properties", {
+        "android": {
+          "kotlinVersion": "1.9.25"
+        }
+      }]
+    ]
   }
 }
