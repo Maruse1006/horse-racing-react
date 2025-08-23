@@ -25,8 +25,8 @@
     "expo-build-properties": "~0.13.3"
   },
   "scripts": {
-    "dev:web": "expo start --web",
-    "dev:native": "expo start",
+    "dev:web": "env-cmd -f .env.development expo start --web --port 3000",
+  "dev:native": "env-cmd -f .env.development expo start",
     "build": "npx expo export -p web",
     "preview": "npx serve dist"
   },
