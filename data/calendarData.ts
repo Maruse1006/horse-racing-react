@@ -36,6 +36,16 @@ export const calendarData = {
     { placeId: "02", round: "01", day: "12" },
     { placeId: "07", round: "第2回", day: "02", year: "2025" }, // 中京競馬場
   ],
+  "2025-07-26": [
+    { placeId: "01", round: "第1回", day: "01", year: "2025"},
+    { placeId: "04", round: "第2回", day: "01", year: "2025"},
+    { placeId: "07", round: "第2回", day: "01", year: "2025" }, // 中京競馬場
+  ],
+  "2025-07-27": [
+    { placeId: "01", round: "第1回", day: "02", year: "2025"},
+    { placeId: "04", round: "第2回", day: "01", year: "2025"},
+    { placeId: "07", round: "第2回", day: "01", year: "2025" }, // 中京競馬場
+  ],
    "2025-08-02": [
     { placeId: "04", round: "第2回", day: "03", year: "2025" },
     { placeId: "07", round: "第3回", day: "03", year: "2025" }, // 中京競馬場
@@ -48,12 +58,21 @@ export const calendarData = {
     { placeId: "07", round: "第3回", day: "06", year: "2025" }, // 中京競馬場
     { placeId: "04", round: "第2回", day: "06", year: "2025" },
   ],
+  "2025-08-16": [
+    { placeId: "07", round: "第3回", day: "07", year: "2025" }, // 中京競馬場
+    { placeId: "04", round: "第2回", day: "04", year: "2025" },
+  ],
+  "2025-08-17": [
+    { placeId: "07", round: "第3回", day: "08", year: "2025" }, // 中京競馬場
+    { placeId: "04", round: "第2回", day: "08", year: "2025" },
+  ],
 
 
 
 };
 
 export const placeData = [
+  { id: "01", name: "札幌競馬場" },
   { id: "02", name: "函館競馬場" },
   { id: "04", name: "新潟競馬場" },
   { id: "05", name: "東京競馬場" },
