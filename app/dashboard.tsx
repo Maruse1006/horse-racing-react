@@ -24,7 +24,7 @@ export default function Dashboard() {
   const [summary, setSummary] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("-");
   const [maxY, setMaxY] = useState(0);
   const [minY, setMinY] = useState(0);
   const [tickValues, setTickValues] = useState([]);
@@ -140,6 +140,7 @@ export default function Dashboard() {
         onValueChange={(itemValue) => setSelectedYear(itemValue)}
         style={styles.picker}
       >
+        <Picker.Item label="-" value="-" />
         <Picker.Item label="2023年度" value="2023" />
         <Picker.Item label="2024年度" value="2024" />
         <Picker.Item label="2025年度" value="2025" />
