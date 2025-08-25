@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, Alert, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Button, Alert, ScrollView, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from "react-native-picker-select";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
@@ -36,10 +36,10 @@ export default function RaceSelectionScreen() {
 
     return schedule
       ? {
-          day: schedule.day,
-          round: schedule.round,
-          year: schedule.year ?? date.split("-")[0],
-        }
+        day: schedule.day,
+        round: schedule.round,
+        year: schedule.year ?? date.split("-")[0],
+      }
       : { day: null, round: null, year: null };
   };
 
@@ -101,46 +101,49 @@ export default function RaceSelectionScreen() {
     });
   };
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <Calendar
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={
-          selectedDate ? { [selectedDate]: { selected: true, marked: true } } : {}
-        }
-        theme={{
-          selectedDayBackgroundColor: "#00adf5",
-          todayTextColor: "#00adf5",
-        }}
-      />
+      <View style={styles.container}>
+        <Calendar
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={
+            selectedDate ? { [selectedDate]: { selected: true, marked: true } } : {}
+          }
+          theme={{
+            selectedDayBackgroundColor: "#00adf5",
+            todayTextColor: "#00adf5",
+          }}
+        />
 
-      <Text style={styles.label}>開催場所を選択</Text>
-      <RNPickerSelect
-        onValueChange={handlePlaceSelection}
-        items={places}
-        value={selectedPlace || undefined}
-        placeholder={{ label: "開催場所を選択", value: null }}
-      />
+        <Text style={styles.label}>開催場所を選択</Text>
+        <RNPickerSelect
+          onValueChange={handlePlaceSelection}
+          items={places}
+          value={selectedPlace || undefined}
+          placeholder={{ label: "開催場所を選択", value: null }}
+        />
 
-      <Text style={styles.label}>レース番号を選択</Text>
-      <RNPickerSelect
-        onValueChange={(value) => setSelectedRace(value)}
-        items={races}
-        value={selectedRace || undefined}
-        placeholder={{ label: "レース番号を選択", value: null }}
-      />
+        <Text style={styles.label}>レース番号を選択</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setSelectedRace(value)}
+          items={races}
+          value={selectedRace || undefined}
+          placeholder={{ label: "レース番号を選択", value: null }}
+        />
 
-      <Text style={styles.label}>
-        選択されたレース: {selectedRace || "未選択"}
-      </Text>
-
-      <Button
-        title="式別画面へ移動"
-        onPress={navigateToBettingOptions}
-        color="#228b22"
-      />
-    </View>
+        <Button
+          title="式別画面へ移動"
+          onPress={navigateToBettingOptions}
+          color="#228b22"
+        />
+        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <Text style={styles.backButtonText}>戻る</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -155,4 +158,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 8,
   },
+  backButton: {
+    backgroundColor: "#2196F3",
+    padding: 12,
+    marginTop: 16,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  }
 });
