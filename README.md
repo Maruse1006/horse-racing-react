@@ -29,5 +29,5 @@
 
 
 
-### 4.課題
+### 4.URL
 https://horse-racing-react.vercel.app/
