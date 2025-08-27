@@ -24,11 +24,10 @@
 - 研究結果を馬券検討に直結させることが可能  
 
 <img width="380" height="681" alt="image" src="https://github.com/user-attachments/assets/29778a15-123e-481f-9a59-b17d9e907724" />
-<img width="392" height="679" alt="image" src="https://github.com/user-attachments/assets/4f3c8b3e-2b62-4238-bb30-0c918fa4d67f" />
-
-<img width="386" height="681" alt="image" src="https://github.com/user-attachments/assets/827e2d91-654e-4b73-b3b3-08b22dcd6c39" />
+<img width="380" height="682" alt="image" src="https://github.com/user-attachments/assets/c62395e2-7ca3-4fb1-a752-1b005d93365c" />
 
 
 
 
+### 4.課題
 https://horse-racing-react.vercel.app/
