@@ -9,6 +9,11 @@
 - 券種・賭け額を入力することで、日別・開催別の収支を管理可能  
 - 累計収支の可視化により、自身の投資傾向を分析  
 
+<img width="383" height="684" alt="image" src="https://github.com/user-attachments/assets/3e654e4b-1246-4063-90ec-c7a6bbbf3b2d" />
+<img width="391" height="617" alt="image" src="https://github.com/user-attachments/assets/f8d4c2e5-4524-42b0-8b64-a947112e2b47" />
+
+
+
 ### 2. 血統検索機能
 - 任意の競走馬を検索すると、**五代血統表**を自動生成  
 - 父系・母系の血統傾向を確認し、得意条件の予測に活用可能  
