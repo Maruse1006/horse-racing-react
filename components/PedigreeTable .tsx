@@ -6,6 +6,8 @@ const PedigreeTable = () => {
   const [pedigreeData, setPedigreeData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 
   const fetchPedigreeData = async () => {
     setLoading(true);
