@@ -140,10 +140,6 @@ export default function WinBet() {
         <ScrollView>
             <View style={styles.container}>
                 <Text style={styles.title}>単勝</Text>
-                <Text>
-                    選択: 開催日={dayCount}, 場所={place}, レース={race}, 回={round}
-                </Text>
-
                 <FlatList
                     data={horses}
                     numColumns={4}

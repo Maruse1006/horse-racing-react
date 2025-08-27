@@ -179,9 +179,6 @@ export default function QuinellaSingleAxis() {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}>馬連軸1頭流し</Text>
-        <Text>
-          選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-        </Text>
 
         {/* 1列目 */}
         <View style={styles.row}>

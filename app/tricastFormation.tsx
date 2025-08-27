@@ -163,9 +163,6 @@ export default function TricastFormation() {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}>三連複フォーメーション</Text>
-        <Text>
-          選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-        </Text>
 
         {/* 1列目 */}
         <View style={styles.row}>

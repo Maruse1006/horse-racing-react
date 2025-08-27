@@ -42,7 +42,6 @@ export default function TrifectaBettingType() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>三連単式別</Text>
-      <Text>選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}</Text>
       <FlatList
         data={options}
         keyExtractor={(item) => item.id}

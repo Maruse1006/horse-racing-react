@@ -144,9 +144,6 @@ export default function PlaceBet() {
         <ScrollView>
             <View style={styles.container}>
                 <Text style={styles.title}>複勝</Text>
-                <Text>
-                    選択した情報: 日付={dayCount}, 場所={place}, レース番号={race}, 開催回={round}
-                </Text>
 
                 <View style={styles.row}>
                     <FlatList

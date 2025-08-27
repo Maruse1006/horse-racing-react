@@ -1,114 +1,131 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Alert,
-  Text,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Alert, Text, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   VictoryChart,
   VictoryLine,
   VictoryAxis,
   VictoryScatter,
-} from "victory"; 
+} from "victory";
 import { Picker } from "@react-native-picker/picker";
 import { calendarData } from "../data/calendarData";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../src/context/AuthContext";
 
+const TOKEN_KEY = "accessToken";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 export default function Dashboard() {
-  const { logout } = useContext(AuthContext)!; 
+  const { logout } = useContext(AuthContext)!;
   const navigation = useNavigation();
-  const [summary, setSummary] = useState([]);
-  const [chartData, setChartData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [summary, setSummary] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<{ x: string; y: number }[]>([]);
+  const [filteredData, setFilteredData] = useState<{ x: string; y: number }[]>([]);
   const [selectedYear, setSelectedYear] = useState("-");
   const [maxY, setMaxY] = useState(0);
   const [minY, setMinY] = useState(0);
-  const [tickValues, setTickValues] = useState([]);
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
+  const [tickValues, setTickValues] = useState<number[]>([]);
 
-  const filterByFiscalYear = (data, year) => {
-    const start = new Date(`${year}-04-01`);
-    const end = new Date(`${parseInt(year) + 1}-03-31`);
-    return data.filter((item) => {
-      const date = new Date(item.x);
-      return date >= start && date <= end;
+  // 強制ログアウト
+  const forceLogout = async (reason: string) => {
+    console.log("forceLogout:", reason);
+    await AsyncStorage.removeItem(TOKEN_KEY);
+    await logout();
+    navigation.reset({ index: 0, routes: [{ name: "Login" as never }] });
+  };
+
+  // 認証付きGET
+  const authGet = async (path: string) => {
+    const token = await AsyncStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      console.log("authGet: token not found in storage");
+      return new Response(null, { status: 401 }) as any;
+    }
+    console.log("authGet: token found, length=", token.length);
+    if (!API_URL) {
+      console.log("authGet: API_URL is undefined!");
+      return new Response(null, { status: 400 }) as any;
+    }
+    const url = `${API_URL}${path}`;
+    console.log("authGet: fetching", url);
+    return fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     });
   };
 
-  const handleLogout = async () => {
-    try {
-      console.log("🧹 Logging out...");
-      await logout(); 
-      console.log("✅ Logout complete");
-    } catch (error) {
-      console.error("❌ Logout failed:", error);
-      Alert.alert("ログアウト失敗", "もう一度お試しください。");
-    }
-  };
-
-
+  // 初回データ取得
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const token = await AsyncStorage.getItem("token");
-        if (!token) {
-          Alert.alert("トークンがありません。ログインしてください。");
+        const res = await authGet(`/api/bet-summary`);
+        if (!res) {
+          console.log("fetchSummary: no response object");
           return;
         }
 
-        const response = await fetch(`${API_URL}/api/bet-summary`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        console.log("fetchSummary: response status", res.status);
 
-        if (response.status === 401) {
-          await AsyncStorage.removeItem("token");
-          Alert.alert("セッション切れ", "再度ログインしてください。");
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-          });
+        if ([401, 403, 422].includes(res.status)) {
+          console.log("fetchSummary: got auth error -> forceLogout");
+          try {
+            const body = await res.clone().text();
+            console.log("fetchSummary: error body:", body);
+          } catch {}
+          await forceLogout("response status " + res.status);
           return;
         }
+        if (!res.ok) {
+          const body = await res.clone().text().catch(() => "");
+          console.log("fetchSummary: non-ok response", res.status, body);
+          throw new Error(`HTTP ${res.status}`);
+        }
 
-        const data = await response.json();
+        const data = await res.json();
+        console.log("fetchSummary: success, daily length=", data?.daily?.length);
         setSummary(data);
 
-        if (!data.daily || !Array.isArray(data.daily)) return;
+        if (!data?.daily || !Array.isArray(data.daily)) {
+          console.log("fetchSummary: daily missing or not array");
+          return;
+        }
 
         const converted = data.daily
-          .map((entry) => {
+          .map((entry: any) => {
             const actualDate = findActualDate(
               calendarData,
               entry.date_info,
               entry.location,
               entry.round
             );
-            return actualDate
-              ? { x: actualDate, y: entry.total_amount }
-              : null;
+            return actualDate ? { x: actualDate, y: entry.total_amount } : null;
           })
-          .filter((item) => item !== null);
+          .filter(Boolean) as { x: string; y: number }[];
 
         const sorted = converted.sort(
-          (a, b) => new Date(a.x) - new Date(b.x)
+          (a, b) => +new Date(a.x) - +new Date(b.x)
         );
+        console.log("fetchSummary: chartData count", sorted.length);
         setChartData(sorted);
       } catch (error) {
-        console.error("エラーが発生しました:", error);
+        console.log("fetchSummary: exception", error);
         Alert.alert("バックエンドへのリクエストに失敗しました。");
       }
     };
 
-    fetchSummary();
+    (async () => {
+      const token = await AsyncStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        console.log("mount: no token in storage -> forceLogout");
+        await forceLogout("no token at mount");
+        return;
+      }
+      console.log("mount: token exists, length=", token.length);
+      fetchSummary();
+    })();
   }, []);
 
+  // 年度ごとのデータ再計算
   useEffect(() => {
     const fiscalData = filterByFiscalYear(chartData, selectedYear);
     setFilteredData(fiscalData);
@@ -119,12 +136,17 @@ export default function Dashboard() {
 
     const niceMax = Math.ceil(max / 10000) * 10000;
     const niceMin = Math.floor(min / 10000) * 10000;
-
     const step = (niceMax - niceMin) / 4 || 1;
-    const ticks = [];
-    for (let i = niceMin; i <= niceMax; i += step) {
-      ticks.push(Math.round(i));
-    }
+    const ticks: number[] = [];
+    for (let i = niceMin; i <= niceMax; i += step) ticks.push(Math.round(i));
+
+    console.log("chart recalculated:", {
+      selectedYear,
+      fiscalCount: fiscalData.length,
+      minY: niceMin,
+      maxY: niceMax,
+      tickCount: ticks.length,
+    });
 
     setTickValues(ticks);
     setMaxY(niceMax);
@@ -137,7 +159,10 @@ export default function Dashboard() {
 
       <Picker
         selectedValue={selectedYear}
-        onValueChange={(itemValue) => setSelectedYear(itemValue)}
+        onValueChange={(itemValue) => {
+          console.log("Picker change", selectedYear, "->", itemValue);
+          setSelectedYear(itemValue);
+        }}
         style={styles.picker}
       >
         <Picker.Item label="-" value="-" />
@@ -192,7 +217,13 @@ export default function Dashboard() {
 
       {/* ログアウトボタン */}
       <View style={styles.logoutContainer}>
-        <Text style={styles.logoutText} onPress={handleLogout}>
+        <Text
+          style={styles.logoutText}
+          onPress={async () => {
+            console.log("manual logout pressed");
+            await forceLogout("manual logout pressed");
+          }}
+        >
           ログアウト
         </Text>
       </View>
@@ -201,7 +232,12 @@ export default function Dashboard() {
 }
 
 // 📅 カレンダーから日付を特定
-const findActualDate = (calendarData, dateInfo, placeId, round) => {
+function findActualDate(
+  calendarData: any,
+  dateInfo: string,
+  placeId: string,
+  round: string
+) {
   for (const date in calendarData) {
     const entries = calendarData[date];
     for (const entry of entries) {
@@ -215,30 +251,23 @@ const findActualDate = (calendarData, dateInfo, placeId, round) => {
     }
   }
   return null;
-};
+}
+
+function filterByFiscalYear(data: { x: string; y: number }[], year: string) {
+  if (year === "-") return data;
+  const start = new Date(`${year}-04-01`);
+  const end = new Date(`${parseInt(year) + 1}-03-31`);
+  return data.filter((item) => {
+    const date = new Date(item.x);
+    return date >= start && date <= end;
+  });
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 16,
-  },
-  picker: {
-    marginBottom: 16,
-    height: 50,
-    width: 200,
-    alignSelf: "center",
-  },
-  logoutContainer: {
-    marginTop: 20,
-    alignItems: "center",
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  title: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginVertical: 16 },
+  picker: { marginBottom: 16, height: 50, width: 200, alignSelf: "center" },
+  logoutContainer: { marginTop: 20, alignItems: "center" },
   logoutText: {
     color: "red",
     fontSize: 16,
