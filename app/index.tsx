@@ -15,7 +15,7 @@ export default function Layout() {
     { id: "1", title: "血統検索", icon: "📋", screen: "blood" },
     { id: "2", title: "収支登録", icon: "📈" , screen: "buy"},
     { id: "3", title: "レーシングカレンダー", icon: "📅" },
-    { id: "4", title: "レース結果", icon: "🏆" },
+    { id: "4", title: "条件戦分析", icon: "🏆" },
   ];
 
   const renderMenuItem = ({ item }) => (
