@@ -44,7 +44,17 @@
 ### 4.条件戦分析
 開発中
 
+### 使用技術
 
+- フロントエンド：React / TypeScript / React Native / Next.js / Tailwind CSS
+
+- バックエンド：Flask / Python / JWT認証 / BeautifulSoup（スクレイピング）
+
+- DB：MySQL
+
+- インフラ：AWS（EC2, Route 53） / Vercel（フロント公開）
+
+- CI/CD：GitHub Actions
 ### インフラ構成図
 <img width="762" height="523" alt="image" src="https://github.com/user-attachments/assets/8ffaa01e-509e-48df-988a-e9340c18fe0e" />
 
