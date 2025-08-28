@@ -17,7 +17,8 @@
 <img width="391" height="617" alt="image" src="https://github.com/user-attachments/assets/f8d4c2e5-4524-42b0-8b64-a947112e2b47" />
 
 -ハンバーガメニューのダッシュボードから年度別の収支を確認できます。
-![Uploading image.png…]()
+<img width="308" height="671" alt="image" src="https://github.com/user-attachments/assets/c7a56679-c452-47f7-923d-3b6280e86d99" />
+
 
 
 
