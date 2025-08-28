@@ -46,7 +46,7 @@
 
 ### 使用技術
 
-- フロントエンド：React / TypeScript / React Native / Next.js / Tailwind CSS
+- フロントエンド：React / TypeScript / React Native
 
 - バックエンド：Flask / Python / JWT認証 / BeautifulSoup（スクレイピング）
 
