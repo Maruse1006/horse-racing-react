@@ -17,7 +17,7 @@ export default function Home() {
     { id: "1", title: "血統検索", icon: "📋", screen: "Blood" },
     { id: "2", title: "収支登録", icon: "📈", screen: "RaceSelection" },
     { id: "3", title: "重賞分析・コース分析", icon: "📅",screen:"GradeCourseAnalysis" },
-    { id: "4", title: "レース結果", icon: "🏆" },
+    { id: "4", title: "条件戦分析", icon: "🏆" },
   ];
 
   const renderMenuItem = ({ item }) => (
