@@ -71,3 +71,4 @@ https://horse-racing-react.vercel.app/
 
 ### 4.今後、追加したい機能
 ・競馬予想AIを用いたデータ分析機能
+・IPAT（JRAネット投票）との連携
