@@ -18,7 +18,7 @@
 
 
 
--ハンバーガメニューのダッシュボードから年度別の収支を確認できます。
+- ハンバーガメニューのダッシュボードから年度別の収支を確認できます。
 
 <img width="308" height="671" alt="image" src="https://github.com/user-attachments/assets/c7a56679-c452-47f7-923d-3b6280e86d99" />
 
